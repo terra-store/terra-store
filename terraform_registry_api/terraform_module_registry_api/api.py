@@ -1,4 +1,4 @@
-from backends import dummy as backend
+from terraform_module_registry_api.backends import dummy as backend
 from flask import make_response
 
 def list_versions(namespace, name, provider):
