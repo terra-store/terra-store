@@ -14,7 +14,7 @@ basePath: /v1/modules
 paths:
   /{namespace}/{name}/{provider}/versions:
     get:
-      operationId: terraform_module_registry_api.api.list_versions
+      operationId: terraform_registry_api.terraform_module_registry_api.api.list_versions
       tags:
         - Modules
       summary: List Module Versions
@@ -44,7 +44,7 @@ paths:
                 type: string
   /{namespace}/{name}/{provider}/{version}/download:
     get:
-      operationId: terraform_module_registry_api.api.download_version
+      operationId: terraform_registry_api.terraform_module_registry_api.api.download_version
       tags:
         - Modules
       summary: Download a single Module Version
