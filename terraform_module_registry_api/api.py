@@ -1,27 +1,7 @@
+from backends import dummy as backend
+
 def list_versions(namespace, name, provider):
-    print(namespace)
-    return """{
-   "modules": [
-      {
-         "versions": [
-            {"version": "1.0.0"},
-            {"version": "1.1.0"},
-            {"version": "2.0.0"}
-         ]
-      }
-   ]
-}"""
+    return backend.get_versions(namespace, name, provider)
 
 def download_version(namespace, name, provider, version):
-    print(version)
-    return """{
-   "modules": [
-      {
-         "versions": [
-            {"version": "1.0.0"},
-            {"version": "1.1.0"},
-            {"version": "2.0.0"}
-         ]
-      }
-   ]
-}"""
+    return ""
