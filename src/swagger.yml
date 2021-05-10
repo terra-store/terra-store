@@ -1,0 +1,79 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger Rest Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /modules/v1
+
+# Paths supported by the server application
+paths:
+  /{namespace}/{name}/{provider}/versions:
+    get:
+      operationId: api.list_versions
+      tags:
+        - Modules
+      summary: List Module Versions
+      description: Listing the module versions
+      parameters:
+          - name: namespace
+            in: path
+            description: Module namespace
+            type: string
+            required: True
+          - name: name
+            in: path
+            description: Name of the module
+            type: string
+            required: True
+          - name: provider
+            in: path
+            description: the system target
+            type: string
+            required: True
+      responses:
+        200:
+          description: Successfully read person from people list operation
+          schema:
+            properties:
+              modules:
+                type: string
+  /{namespace}/{name}/{provider}/{version}/download:
+    get:
+      operationId: api.download_version
+      tags:
+        - Modules
+      summary: Download a single Module Version
+      description: Download a version
+      parameters:
+        - name: namespace
+          in: path
+          description: Module namespace
+          type: string
+          required: True
+        - name: name
+          in: path
+          description: Name of the module
+          type: string
+          required: True
+        - name: provider
+          in: path
+          description: the system target
+          type: string
+          required: True
+        - name: version
+          in: path
+          description: The version of the module
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully read person from people list operation
+          schema:
+            properties:
+              modules:
+                type: string
