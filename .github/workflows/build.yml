@@ -34,7 +34,8 @@ jobs:
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file Dockerfile --build-arg codecov_token=$(codecov_token)
+            ci_env=`bash <(curl -s https://codecov.io/env)`
+            docker build . --file Dockerfile $ci_env --build-arg codecov_token=$(codecov_token)
           fi
 
   # Push image to GitHub Packages.
