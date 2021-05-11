@@ -22,17 +22,17 @@ RUN pip install -r /tmp/test-requirements.txt && \
 
 RUN coverage run --source=terraform_registry_api -m pytest tests/ && \
 coverage report -m
-ARG CI=False
-ENV e_CI=$CI
+ARG codecov_token=False
+ENV codecov_token=$codecov_token
 RUN apk add curl bash && \
-    if [ "$e_CI" == "True" ]; then curl -o covbash https://codecov.io/bash; /bin/bash ./covbash; fi
+    if [ "$codecov_token" != "False" ]; then curl -o covbash https://codecov.io/bash; /bin/bash ./covbash; fi
 
-# FROM python:3.9-alpine as runtime
+FROM python:3.9-alpine as runtime
 
-# COPY prod-requirements.txt /tmp/
-# COPY --from=test /tmp/terraform_registry_api-*-py3-none-any.whl /tmp/
-# RUN pip install -r /tmp/prod-requirements.txt && \
-#     pip install /tmp/terraform_registry_api*.whl
+COPY prod-requirements.txt /tmp/
+COPY --from=test /tmp/terraform_registry_api-*-py3-none-any.whl /tmp/
+RUN pip install -r /tmp/prod-requirements.txt && \
+    pip install /tmp/terraform_registry_api*.whl
 
-# CMD [ "/usr/local/bin/waitress-serve", "--call", "terraform_registry_api.registry:create_app" ]
+CMD [ "/usr/local/bin/waitress-serve", "--call", "terraform_registry_api.registry:create_app" ]
 
