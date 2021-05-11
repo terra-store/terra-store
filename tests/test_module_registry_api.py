@@ -1,4 +1,3 @@
-import json
 import pytest
 
 from terraform_registry_api import registry
