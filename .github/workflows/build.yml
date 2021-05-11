@@ -27,12 +27,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run tests
+        env:
+          codecov_token: ${{ secrets.codecov_token }}
         run: |
           if [ -f docker-compose.test.yml ]; then
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file Dockerfile --build-arg CI=True
+            docker build . --file Dockerfile --build-arg codecov_token=$(codecov_token)
           fi
 
   # Push image to GitHub Packages.
