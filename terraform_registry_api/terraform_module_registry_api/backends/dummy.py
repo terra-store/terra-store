@@ -36,7 +36,7 @@ def get_versions(namespace, name, provider):
 
 def download_version(namespace, name, provider, version):
     module_name="/{namespace}/{name}/{provider}".format(namespace=namespace, name=name, provider=provider)
-    if module_name in dummy_data['modules'].keys() and version in version in dummy_data['modules'][module_name]['versions']:
+    if module_name in dummy_data['modules'].keys() and version in dummy_data['modules'][module_name]['versions']:
         return "https://api.github.com/repos/{namespace}/terraform-{provider}-{name}/tarball/v{version}//*?archive=tar.gz".format(provider=provider, 
                                                                                                                        name=name,
                                                                                                                        version=version,
