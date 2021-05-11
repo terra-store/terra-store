@@ -1,0 +1,1 @@
+include ./terraform_registry_api/terraform_module_registry_api/swagger.yml
