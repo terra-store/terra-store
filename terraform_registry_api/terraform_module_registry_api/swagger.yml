@@ -37,7 +37,7 @@ paths:
             required: True
       responses:
         200:
-          description: Successfully read person from people list operation
+          description: Successfully list version of module
           schema:
             properties:
               modules:
@@ -71,8 +71,124 @@ paths:
           type: string
           required: True
       responses:
+        204:
+          description: Empty Response with download header
+  /{namespace}:
+    get:
+      operationId: terraform_registry_api.terraform_module_registry_api.api.list_modules
+      tags:
+        - Modules
+      summary: List Modules
+      description: Listing the modules
+      parameters:
+        - name: namespace
+          in: path
+          description: Module namespace
+          type: string
+          required: True
+        - name: offset
+          in: query
+          description: Module namespace
+          type: integer
+          required: False
+        - name: limit
+          in: query
+          description: Module namespace
+          type: integer
+          required: False
+        - name: provider
+          in: query
+          description: Limits modules to a specific provider.
+          type: string
+          required: False
+        - name: verified
+          in: query
+          description: Limits modules to verified modules.
+          type: boolean
+          required: False
+      responses:
         200:
-          description: Successfully read person from people list operation
+          description: Successfully list version of module
+          schema:
+            properties:
+              modules:
+                type: string
+  /:
+    get:
+      operationId: terraform_registry_api.terraform_module_registry_api.api.list_all_modules
+      tags:
+        - Modules
+      summary: List Modules
+      description: Listing the modules
+      parameters:
+        - name: offset
+          in: query
+          description: Module namespace
+          type: integer
+          required: False
+        - name: limit
+          in: query
+          description: Module namespace
+          type: integer
+          required: False
+        - name: provider
+          in: query
+          description: Limits modules to a specific provider.
+          type: string
+          required: False
+        - name: verified
+          in: query
+          description: Limits modules to verified modules.
+          type: boolean
+          required: False
+      responses:
+        200:
+          description: Successfully list version of module
+          schema:
+            properties:
+              modules:
+                type: string
+  /search:
+    get:
+      operationId: terraform_registry_api.terraform_module_registry_api.api.search_modules
+      tags:
+        - Modules
+      summary: Search Modules
+      description: Listing the modules
+      parameters:
+        - name: q
+          in: query
+          description: The search string.
+          type: string
+          required: True
+        - name: offset
+          in: query
+          description: Module namespace
+          type: integer
+          required: False
+        - name: limit
+          in: query
+          description: Module namespace
+          type: integer
+          required: False
+        - name: provider
+          in: query
+          description: Limits modules to a specific provider.
+          type: string
+          required: False
+        - name: verified
+          in: query
+          description: Limits modules to verified modules.
+          type: boolean
+          required: False
+        - name: namespace
+          in: query
+          description: Limits results to a specific namespace.
+          type: string
+          required: False
+      responses:
+        200:
+          description: Successfully list version of module
           schema:
             properties:
               modules:
