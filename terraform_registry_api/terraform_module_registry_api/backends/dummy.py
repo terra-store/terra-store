@@ -16,7 +16,8 @@ dummy_data = {
 }
 
 def get_versions(namespace, name, provider):
-    """Get The Versions
+    """
+    Get The Versions
 
     Args:
         namespace (str): [description]
@@ -46,7 +47,8 @@ def get_versions(namespace, name, provider):
         raise ModuleNotFoundException("Module Not Found: "+ module_name)
 
 def download_version(namespace, name, provider, version):
-    """Generate Download URL for module version
+    """
+    Generate Download URL for module version
 
     Args:
         namespace (str): [description]
