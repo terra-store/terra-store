@@ -1,5 +1,4 @@
-"""
-Backends Module
+"""Backends Module
 
 Current Implementations:
  - Dummy

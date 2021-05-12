@@ -1,3 +1,1 @@
-"""
-Main Module
-"""
+"Main Module"
