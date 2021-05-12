@@ -15,6 +15,7 @@ test: build
 	pip install -r test-requirements.txt
 	coverage run --source=terraform_registry_api -m pytest tests/
 	coverage report -m
+	coverage xml
 
 run:
 	python3 terraform_registry_api/registry.py
