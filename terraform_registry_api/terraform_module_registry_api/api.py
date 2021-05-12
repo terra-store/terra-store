@@ -25,3 +25,15 @@ def download_version(namespace, name, provider, version):
 
 def search_modules():
    return make_response("", 404)
+
+def get_latest_for_all_providers(namespace, name):
+   return make_response("", 404)
+
+def get_latest_for_provider(namespace, name, provider):
+   return make_response("", 404)
+
+def get_module(namespace, name, provider, version):
+   return make_response("", 404)
+
+def download_latest(namespace, name, provider):
+   return make_response("", 404)
