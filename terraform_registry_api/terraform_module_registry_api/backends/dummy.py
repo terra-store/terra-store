@@ -16,8 +16,7 @@ dummy_data = {
 }
 
 def get_versions(namespace, name, provider):
-    """
-    Get The Versions
+    """Get The Versions
 
     Args:
         namespace (str): [description]
