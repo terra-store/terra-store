@@ -34,7 +34,7 @@ jobs:
       
       - name: Manual Coverage
         env:
-          CODACY_PROJECT_TOKEN=${{ secrets.CODACY_PROJECT_TOKEN }}
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           ls -la *coverage*
           cat coverage.xml
