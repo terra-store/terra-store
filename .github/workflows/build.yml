@@ -32,22 +32,11 @@ jobs:
         run: |
           make test
 
-      - name: Coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run:
-           bash <(curl -s https://codecov.io/bash)
-#       - name: Upload coverage to Codecov
-#         uses: codecov/codecov-action@v1.5.0
-#         with:
-#           files: ./coverage.xml
-#           name: codecov-unittest
-#           token: ${{ secrets.CODECOV_TOKEN }}
-#           directory: .
-#           env_vars: OS,PYTHON
-#           flags: unittests
-#           fail_ci_if_error: false
-#           path_to_write_report: ./codecov_report.txt
+      - name: Codacy Coverage Reporter
+        uses: codacy/codacy-coverage-reporter-action@1.0.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage.xml
  # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
