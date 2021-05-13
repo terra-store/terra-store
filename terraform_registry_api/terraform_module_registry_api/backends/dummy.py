@@ -1,5 +1,6 @@
 import json
-from terraform_registry_api.terraform_module_registry_api.exceptions import ModuleNotFoundException
+from terraform_registry_api.terraform_module_registry_api.exceptions \
+    import ModuleNotFoundException
 
 
 dummy_data = {
@@ -64,9 +65,10 @@ def download_version(namespace, name, provider, version):
     """
     module_name = "/{namespace}/{name}/{provider}".format(
         namespace=namespace, name=name, provider=provider)
-    if module_name in dummy_data['modules'].keys() and version in dummy_data['modules'][module_name]['versions']:
-        return "https://api.github.com/repos/{namespace}/terraform-{provider}-{name}/tarball/v{version}//*?archive=tar.gz".format(provider=provider,
-                                                                                                                                  name=name,
-                                                                                                                                  version=version,
-                                                                                                                                  namespace=namespace)
+    if module_name in dummy_data['modules'].keys() and \
+            version in dummy_data['modules'][module_name]['versions']:
+
+        return "{base_url}/{namespace}/{provider}-{name}/v{version}".format(
+            provider=provider, base_url="https://api.github.com/repos",
+            name=name, version=version, namespace=namespace)
     raise ModuleNotFoundException("Module Not Found: "+module_name)
