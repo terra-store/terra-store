@@ -1,4 +1,4 @@
-name: Build, Test, And Publish
+name: Build
 
 on:
   push:
@@ -25,6 +25,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Run tests
         run: |
