@@ -41,7 +41,8 @@ def test_list_versions_modulenotfound(client):
 
 
 def test_download_latest_modulefound(client):
-    rv = client.get('/v1/modules/pexa/test/aws/download', follow_redirects=False)
+    rv = client.get('/v1/modules/pexa/test/aws/download',
+                    follow_redirects=False)
     assert rv.status_code == 302
     assert rv.headers['Location'] == \
         "http://localhost:5000/v1/modules/pexa/test/aws/2.0.0/download"
