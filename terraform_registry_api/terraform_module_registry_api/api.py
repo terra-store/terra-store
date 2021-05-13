@@ -1,8 +1,8 @@
 from terraform_registry_api.terraform_module_registry_api.backends \
-   import dummy as backend
+    import dummy as backend
 from terraform_registry_api.terraform_module_registry_api.exceptions \
-   import ModuleNotFoundException
-from flask import make_response
+    import ModuleNotFoundException
+from flask import make_response, redirect
 
 
 def list_modules(namespace=None):
@@ -47,4 +47,8 @@ def get_module(namespace, name, provider, version):
 
 
 def download_latest(namespace, name, provider):
-    return make_response("", 404)
+    try:
+        return redirect(backend.download_latest(
+            namespace, name, provider))
+    except ModuleNotFoundException as e:
+        return make_response(e.message, 404)

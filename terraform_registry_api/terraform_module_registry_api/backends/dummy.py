@@ -21,15 +21,15 @@ def get_versions(namespace, name, provider):
     """Get The Versions.
 
     Args:
-        namespace (str): [description]
-        name (str): [description]
-        provider (str): [description]
+        namespace (str): namespace for the version
+        name (str): Name of the module
+        provider (str): Provider for the module
 
     Raises:
-        ModuleNotFoundException: [description]
+        ModuleNotFoundException: Error if module does not exist
 
     Returns:
-        json: [description]
+        json: JSON object containing the versions of the module on the server
     """
     module_name = "/{namespace}/{name}/{provider}".format(
         namespace=namespace, name=name, provider=provider)
@@ -52,16 +52,16 @@ def download_version(namespace, name, provider, version):
     """Generate Download URL for module version.
 
     Args:
-        namespace (str): [description]
-        name (str): [description]
-        provider (str): [description]
-        version (str): [description]
+        namespace (str): namespace for the version
+        name (str): Name of the module
+        provider (str): Provider for the module
+        version (str): Version for the module
 
     Raises:
-        ModuleNotFoundException: [description]
+        ModuleNotFoundException: Error if module does not exist
 
     Returns:
-        str: [description]
+        str: Download url of the module itself
     """
     module_name = "/{namespace}/{name}/{provider}".format(
         namespace=namespace, name=name, provider=provider)
@@ -71,4 +71,29 @@ def download_version(namespace, name, provider, version):
         return "{base_url}/{namespace}/{provider}-{name}/v{version}".format(
             provider=provider, base_url="https://api.github.com/repos",
             name=name, version=version, namespace=namespace)
+    raise ModuleNotFoundException("Module Not Found: "+module_name)
+
+
+def download_latest(namespace, name, provider):
+    """[summary]
+
+    Args:
+        namespace (str): namespace for the version
+        name (str): Name of the module
+        provider (str): Provider for the module
+
+    Raises:
+        ModuleNotFoundException: Error if module does not exist
+
+    Returns:
+        str: URL for downloading module
+    """
+    module_name = "/{namespace}/{name}/{provider}".format(
+        namespace=namespace, name=name, provider=provider)
+    if module_name in dummy_data['modules'].keys():
+        # get version and build URL
+        url = "{base_url}{module_name}/2.0.0/download".format(
+            module_name=module_name,
+            base_url="http://localhost:5000/v1/modules")
+        return url
     raise ModuleNotFoundException("Module Not Found: "+module_name)
