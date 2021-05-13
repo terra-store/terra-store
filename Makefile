@@ -9,7 +9,7 @@ clean-build:
 	rm -rf .coverage
 
 lint:
-	flake8 --exclude=.tox
+	flake8 --exclude=venv,build
 
 test: build
 	pip install -r test-requirements.txt
