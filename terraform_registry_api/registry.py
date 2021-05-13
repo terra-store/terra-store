@@ -1,6 +1,7 @@
 import connexion
 import json
 
+
 def create_app():
     # Create the application instance
     app = connexion.App(__name__, specification_dir="./")
@@ -16,6 +17,7 @@ def create_app():
         }
         return json.dumps(services)
     return app
+
 
 if __name__ == "__main__":
     app = create_app()
