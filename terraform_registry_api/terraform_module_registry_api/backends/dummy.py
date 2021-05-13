@@ -75,7 +75,8 @@ def download_version(namespace, name, provider, version):
 
 
 def download_latest(namespace, name, provider):
-    """[summary]
+    """Find the latest version of the module and return a 302 to the download
+    url for the module.
 
     Args:
         namespace (str): namespace for the version
@@ -91,7 +92,6 @@ def download_latest(namespace, name, provider):
     module_name = "/{namespace}/{name}/{provider}".format(
         namespace=namespace, name=name, provider=provider)
     if module_name in dummy_data['modules'].keys():
-        # get version and build URL
         url = "{base_url}{module_name}/2.0.0/download".format(
             module_name=module_name,
             base_url="http://localhost:5000/v1/modules")
