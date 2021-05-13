@@ -3,37 +3,46 @@ from terraform_registry_api.terraform_module_registry_api.exceptions import Modu
 from flask import make_response
 
 
-def list_modules(namespace = None):
-   return make_response("", 404)
+def list_modules(namespace=None):
+    return make_response("", 404)
+
 
 def list_all_modules():
-   return list_modules()
+    return list_modules()
+
 
 def list_versions(namespace, name, provider):
-   try:
-      return backend.get_versions(namespace, name, provider)
-   except ModuleNotFoundException as e:
-      return make_response(e.message, 404)
+    try:
+        return backend.get_versions(namespace, name, provider)
+    except ModuleNotFoundException as e:
+        return make_response(e.message, 404)
+
 
 def download_version(namespace, name, provider, version):
-   try:
-      resp = make_response('', 204)
-      resp.headers['X-Terraform-Get'] = backend.download_version(namespace, name, provider, version)
-      return resp
-   except ModuleNotFoundException as e:
-      return make_response(e.message, 404)
+    try:
+        resp = make_response('', 204)
+        resp.headers['X-Terraform-Get'] = backend.download_version(
+            namespace, name, provider, version)
+        return resp
+    except ModuleNotFoundException as e:
+        return make_response(e.message, 404)
+
 
 def search_modules():
-   return make_response("", 404)
+    return make_response("", 404)
+
 
 def get_latest_for_all_providers(namespace, name):
-   return make_response("", 404)
+    return make_response("", 404)
+
 
 def get_latest_for_provider(namespace, name, provider):
-   return make_response("", 404)
+    return make_response("", 404)
+
 
 def get_module(namespace, name, provider, version):
-   return make_response("", 404)
+    return make_response("", 404)
+
 
 def download_latest(namespace, name, provider):
-   return make_response("", 404)
+    return make_response("", 404)
