@@ -31,12 +31,14 @@ jobs:
       - name: Run tests
         run: |
           make test
-
-      - name: Codacy Coverage Reporter
-        uses: codacy/codacy-coverage-reporter-action@1.0.0
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage.xml
+      
+      - name: Manual Coverage
+        env:
+          CODACY_PROJECT_TOKEN=${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          ls -la *coverage*
+          cat coverage.xml
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Python -r coverage.xml
  # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
