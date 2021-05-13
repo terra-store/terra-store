@@ -1,4 +1,4 @@
-name: Build, Test, And Publish
+name: Build
 
 on:
   push:
@@ -25,17 +25,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Run tests
         run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
-
-  # Push image to GitHub Packages.
+          make test
+      
+      - name: Manual Coverage
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l Python -r coverage.xml
+ # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
     # Ensure test job passes before pushing image.
@@ -50,6 +52,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Run Build
+        run: |
+          make build
 
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
