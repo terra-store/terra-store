@@ -71,12 +71,14 @@ def download_version(namespace, name, provider, version):
         return "{base_url}/{namespace}/{provider}-{name}/v{version}".format(
             provider=provider, base_url="https://api.github.com/repos",
             name=name, version=version, namespace=namespace)
-    raise ModuleNotFoundException("Module Not Found: "+module_name)
+    raise ModuleNotFoundException("Module Not Found: " + module_name)
 
 
 def download_latest(namespace, name, provider):
-    """Find the latest version of the module and return a 302 to the download
-    url for the module.
+    """Find the latest version of the module.
+
+    Find the latest version of the module and return
+    a 302 to the download url for the module.
 
     Args:
         namespace (str): namespace for the version
