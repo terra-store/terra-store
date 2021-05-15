@@ -9,17 +9,57 @@ from terraform_registry_api.terraform_module_registry_api.exceptions \
 def list_modules(namespace=None):
     """List modules in namespace requested.
 
+    Response format:
+    {
+        "meta": {
+            "limit": 2,
+            "current_offset": 0,
+            "next_offset": 2,
+            "next_url": "/v1/modules?limit=2&offset=2&verified=true"
+        },
+        "modules": [
+            {
+            "id": "GoogleCloudPlatform/lb-http/google/1.0.4",
+            "owner": "",
+            "namespace": "GoogleCloudPlatform",
+            "name": "lb-http",
+            "version": "1.0.4",
+            "provider": "google",
+            "description": "Modular Global HTTP Load Balancer for GCE using forwarding rules.",
+            "source": "https://github.com/GoogleCloudPlatform/terraform-google-lb-http",
+            "published_at": "2017-10-17T01:22:17.792066Z",
+            "downloads": 213,
+            "verified": true
+            },
+            {
+            "id": "terraform-aws-modules/vpc/aws/1.5.1",
+            "owner": "",
+            "namespace": "terraform-aws-modules",
+            "name": "vpc",
+            "version": "1.5.1",
+            "provider": "aws",
+            "description": "Terraform module which creates VPC resources on AWS",
+            "source": "https://github.com/terraform-aws-modules/terraform-aws-vpc",
+            "published_at": "2017-11-23T10:48:09.400166Z",
+            "downloads": 29714,
+            "verified": true
+            }
+        ]
+    }
+
     Args:
         namespace (str, optional): Namespace for the module. Defaults to None.
 
     Returns:
         response: JSON formatted respnse
     """
-    return make_response("", 404)
+    return make_response(backend.get_modules(namespace), 200)
 
 
 def list_all_modules():
     """List all modules.
+
+    See list_modules for details.
 
     Returns:
         response: json list of all modules

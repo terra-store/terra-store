@@ -99,3 +99,44 @@ def download_latest(namespace, name, provider):
             base_url="http://localhost:5000/v1/modules")
         return url
     raise ModuleNotFoundException("Module Not Found: " + module_name)
+
+
+def get_modules(namespace=None):
+    modules= []
+    if namespace is None:
+        modules=dummy_data['modules'].keys()
+    else:
+        search_string="/" + namespace
+        for key in dummy_data['modules'].keys():
+            if key.startswith(search_string):
+                modules.append(key)
+    details={
+        'meta': {
+            'limit': len(modules),
+            'current_offset': 0,
+        },
+        'modules': get_module_details(modules)
+    }
+    return json.dumps(details)
+
+
+def get_module_details(modules):
+    module_details=[]
+    for mod in modules:
+        data=mod.split("/")
+        details={
+            'id': '{module}/2.0.0'.format(module=mod),
+            'owner': 'noone',
+            'namespace': data[1],
+            'name': data[2],
+            'version': '2.0.0',
+            'provider': data[3],
+            'description': 'Fake Module.',
+            'source': 'http://localhost:5000/storage{module}/2.0.0'.format(
+                module=mod),
+            'published_at': '2021-10-17T01:22:17.792066Z',
+            'downloads': 213,
+            'verified': True
+            }
+        module_details.append(details)
+    return module_details
