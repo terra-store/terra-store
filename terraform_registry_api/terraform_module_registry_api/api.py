@@ -1,8 +1,9 @@
+from flask import make_response, redirect
+
 from terraform_registry_api.terraform_module_registry_api.backends \
     import dummy as backend
 from terraform_registry_api.terraform_module_registry_api.exceptions \
     import ModuleNotFoundException
-from flask import make_response, redirect
 
 
 def list_modules(namespace=None):
