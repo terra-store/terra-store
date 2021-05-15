@@ -16,7 +16,7 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/terra-store/terra-store/issues",
     },
     classifiers=[
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.6",
         "Framework :: Flask",
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: Apache Software License",
@@ -26,4 +26,5 @@ setuptools.setup(
     package_dir={"": "."},
     packages=setuptools.find_packages(where="."),
     python_requires=">=3.6",
+    keywords = "terraform, registry, flask",
 )
