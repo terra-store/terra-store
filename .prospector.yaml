@@ -14,12 +14,6 @@ frosted:
 pyroma:
   run: true
 
-mypy:
-  run: true
-  options:
-    ignore-missing-imports: true
-    follow-imports: skip
-
 pylint:
   disable:
     - bad-builtin
@@ -38,3 +32,5 @@ pep257:
     - D406
     - D407
     - D413
+    - D100
+    - D203

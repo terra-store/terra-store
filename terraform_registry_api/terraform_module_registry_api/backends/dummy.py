@@ -6,7 +6,7 @@ from terraform_registry_api.terraform_module_registry_api.exceptions \
 dummy_data = {
     "modules":
         {
-            "/pexa/test/aws": {
+            "/terra/test/aws": {
                 "versions": [
                     "1.0.0",
                     "1.1.0",
