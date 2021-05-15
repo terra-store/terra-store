@@ -98,4 +98,4 @@ def download_latest(namespace, name, provider):
             module_name=module_name,
             base_url="http://localhost:5000/v1/modules")
         return url
-    raise ModuleNotFoundException("Module Not Found: "+module_name)
+    raise ModuleNotFoundException("Module Not Found: " + module_name)
