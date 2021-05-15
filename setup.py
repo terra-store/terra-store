@@ -16,7 +16,8 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/terra-store/terra-store/issues",
     },
     classifiers=[
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Framework :: Flask",
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: POSIX :: Linux",
