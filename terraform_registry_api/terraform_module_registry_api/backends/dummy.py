@@ -102,14 +102,22 @@ def download_latest(namespace, name, provider):
 
 
 def get_modules(namespace=None):
+    """Get all odules in namespace provided
+
+    Args:
+        namespace (str, optional): Namespace of modules. Defaults to None.
+
+    Returns:
+        json: JSON representation of the modules within the namespace
+    """
     modules = []
     if namespace is None:
         modules = dummy_data['modules'].keys()
     else:
         search_string = "/" + namespace
-        for key in dummy_data['modules'].keys():
-            if key.startswith(search_string):
-                modules.append(key)
+        for module in dummy_data['modules']:
+            if module.startswith(search_string):
+                modules.append(module)
     details = {
         'meta': {
             'limit': len(modules),
@@ -121,6 +129,14 @@ def get_modules(namespace=None):
 
 
 def get_module_details(modules):
+    """Get extended details for the modules in the list
+
+    Args:
+        modules (list): [description]
+
+    Returns:
+        list: List of modules including details
+    """
     module_details = []
     for mod in modules:
         data = mod.split("/")
