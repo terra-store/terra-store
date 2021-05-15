@@ -66,25 +66,26 @@ def test_download_latest_modulenotfound(client):
     assert rv.status_code == 404
     assert rv.data == b'Module Not Found: /terra/test/aws2'
 
+
 def test_get_all_modules(client):
-    details={
+    details = {
         'meta': {
             'limit': 1,
             'current_offset': 0,
         },
         'modules': [
             {
-            'id': '/terra/test/aws/2.0.0',
-            'owner': 'noone',
-            'namespace': 'terra',
-            'name': 'test',
-            'version': '2.0.0',
-            'provider': 'aws',
-            'description': 'Fake Module.',
-            'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
-            'published_at': '2021-10-17T01:22:17.792066Z',
-            'downloads': 213,
-            'verified': True
+                'id': '/terra/test/aws/2.0.0',
+                'owner': 'noone',
+                'namespace': 'terra',
+                'name': 'test',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'Fake Module.',
+                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
             }
         ]
     }
@@ -92,28 +93,69 @@ def test_get_all_modules(client):
     assert rv.status_code == 200
     assert json.loads(rv.data) == details
 
+
 def test_get_all_modules_limit2(client):
-    details={
+    details = {
         'meta': {
             'limit': 1,
             'current_offset': 0,
         },
         'modules': [
             {
-            'id': '/terra/test/aws/2.0.0',
-            'owner': 'noone',
-            'namespace': 'terra',
-            'name': 'test',
-            'version': '2.0.0',
-            'provider': 'aws',
-            'description': 'Fake Module.',
-            'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
-            'published_at': '2021-10-17T01:22:17.792066Z',
-            'downloads': 213,
-            'verified': True
+                'id': '/terra/test/aws/2.0.0',
+                'owner': 'noone',
+                'namespace': 'terra',
+                'name': 'test',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'Fake Module.',
+                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
             }
         ]
     }
     rv = client.get("/v1/modules/?limit=2")
+    assert rv.status_code == 200
+    assert json.loads(rv.data) == details
+
+
+def test_get_all_terra_modules(client):
+    details = {
+        'meta': {
+            'limit': 1,
+            'current_offset': 0,
+        },
+        'modules': [
+            {
+                'id': '/terra/test/aws/2.0.0',
+                'owner': 'noone',
+                'namespace': 'terra',
+                'name': 'test',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'Fake Module.',
+                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
+            }
+        ]
+    }
+    rv = client.get("/v1/modules/terra")
+    assert rv.status_code == 200
+    assert json.loads(rv.data) == details
+
+
+def test_get_none_terra2_modules(client):
+    details = {
+        'meta': {
+            'limit': 0,
+            'current_offset': 0,
+        },
+        'modules': []
+    }
+    rv = client.get("/v1/modules/terra2")
     assert rv.status_code == 200
     assert json.loads(rv.data) == details
