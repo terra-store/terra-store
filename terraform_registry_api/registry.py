@@ -1,8 +1,15 @@
-import connexion
 import json
+import connexion
 
 
 def create_app():
+    """Create and configure Flask API
+
+    Create and configure the Flask API using theswagger defnitions
+
+    Returns:
+        FlaskApp: The intialized FlaskApp Server
+    """
     # Create the application instance
     app = connexion.App(__name__, specification_dir="./")
 
@@ -11,6 +18,11 @@ def create_app():
 
     @app.route("/.well-known/terraform.json")
     def service_discovery():
+        """Service Discovery Endpoint
+
+        Returns:
+            json: Descprion of the supported apis and the base urls
+        """
         services = {
             "modules.v1": "http://localhost:5000/v1/modules",
             "providers.v1": "http://localhost:5000/v1/providers"
