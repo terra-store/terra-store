@@ -25,8 +25,8 @@ def list_modules(namespace=None):
             "name": "lb-http",
             "version": "1.0.4",
             "provider": "google",
-            "description": "Modular Global HTTP Load Balancer for GCE using forwarding rules.",
-            "source": "https://github.com/GoogleCloudPlatform/terraform-google-lb-http",
+            "description": "Description.",
+            "source": "source_url",
             "published_at": "2017-10-17T01:22:17.792066Z",
             "downloads": 213,
             "verified": true
@@ -38,8 +38,8 @@ def list_modules(namespace=None):
             "name": "vpc",
             "version": "1.5.1",
             "provider": "aws",
-            "description": "Terraform module which creates VPC resources on AWS",
-            "source": "https://github.com/terraform-aws-modules/terraform-aws-vpc",
+            "description": "TDescription",
+            "source": "source_url",
             "published_at": "2017-11-23T10:48:09.400166Z",
             "downloads": 29714,
             "verified": true

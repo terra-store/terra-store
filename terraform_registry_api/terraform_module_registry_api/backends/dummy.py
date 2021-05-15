@@ -102,15 +102,15 @@ def download_latest(namespace, name, provider):
 
 
 def get_modules(namespace=None):
-    modules= []
+    modules = []
     if namespace is None:
-        modules=dummy_data['modules'].keys()
+        modules = dummy_data['modules'].keys()
     else:
-        search_string="/" + namespace
+        search_string = "/" + namespace
         for key in dummy_data['modules'].keys():
             if key.startswith(search_string):
                 modules.append(key)
-    details={
+    details = {
         'meta': {
             'limit': len(modules),
             'current_offset': 0,
@@ -121,10 +121,10 @@ def get_modules(namespace=None):
 
 
 def get_module_details(modules):
-    module_details=[]
+    module_details = []
     for mod in modules:
-        data=mod.split("/")
-        details={
+        data = mod.split("/")
+        details = {
             'id': '{module}/2.0.0'.format(module=mod),
             'owner': 'noone',
             'namespace': data[1],
@@ -137,6 +137,6 @@ def get_module_details(modules):
             'published_at': '2021-10-17T01:22:17.792066Z',
             'downloads': 213,
             'verified': True
-            }
+        }
         module_details.append(details)
     return module_details
