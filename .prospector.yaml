@@ -3,7 +3,7 @@ output-format: grouped
 strictness: veryhigh
 doc-warnings: true
 test-warnings: false
-max-line-length: 80
+max-line-length: 90
 
 ignore-paths:
   - docs/
