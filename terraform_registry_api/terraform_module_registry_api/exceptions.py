@@ -1,11 +1,13 @@
 
 class ModuleNotFoundException(Exception):
-    """ModuleNotFoundException
+    """ModuleNotFoundException.
 
-    An Exception thrown when a module was requested that was
-    not found in the configured backend"""
+    An Exception thrown when a module was requested that was not found
+    in the configured backend
+    """
+
     def __init__(self, message):
-        """Initialize the Exception
+        """Initialize the Exception.
 
         Args:
             message (str): Description of the exception cause

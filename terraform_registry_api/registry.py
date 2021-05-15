@@ -3,7 +3,7 @@ import connexion
 
 
 def create_app():
-    """Create and configure Flask API
+    """Create and configure Flask API.
 
     Create and configure the Flask API using theswagger defnitions
 
@@ -18,7 +18,7 @@ def create_app():
 
     @app.route("/.well-known/terraform.json")
     def service_discovery():
-        """Service Discovery Endpoint
+        """Service Discovery Endpoint.
 
         Returns:
             json: Descprion of the supported apis and the base urls
