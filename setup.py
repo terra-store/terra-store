@@ -17,8 +17,9 @@ setuptools.setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache 2.0 License",
-        "Operating System :: Linux",
+        "Development Status :: 2 - Pre-Alpha",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX :: Linux",
     ],
     include_package_data=True,
     package_dir={"": "."},
