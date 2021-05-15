@@ -102,7 +102,7 @@ def download_latest(namespace, name, provider):
 
 
 def get_modules(namespace=None):
-    """Get all odules in namespace provided
+    """Get all modules in namespace provided.
 
     Args:
         namespace (str, optional): Namespace of modules. Defaults to None.
@@ -129,7 +129,7 @@ def get_modules(namespace=None):
 
 
 def get_module_details(modules):
-    """Get extended details for the modules in the list
+    """Get extended details for the modules in the list.
 
     Args:
         modules (list): [description]
