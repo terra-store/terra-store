@@ -1,3 +1,4 @@
+import json
 import pytest
 
 from terraform_registry_api import registry
@@ -31,7 +32,19 @@ def test_download_module_namenotfound(client):
 
 def test_list_versions_valid(client):
     rv = client.get('/v1/modules/terra/test/aws/versions')
+    versions = {
+        "modules": [
+            {
+                "versions": [
+                    {"version": "1.0.0"},
+                    {"version": "1.1.0"},
+                    {"version": "2.0.0"}
+                ]
+            }
+        ]
+    }
     assert rv.status_code == 200
+    assert json.loads(rv.data) == json.dumps(versions)
 
 
 def test_list_versions_modulenotfound(client):
@@ -52,3 +65,55 @@ def test_download_latest_modulenotfound(client):
     rv = client.get('/v1/modules/terra/test/aws2/download')
     assert rv.status_code == 404
     assert rv.data == b'Module Not Found: /terra/test/aws2'
+
+def test_get_all_modules(client):
+    details={
+        'meta': {
+            'limit': 1,
+            'current_offset': 0,
+        },
+        'modules': [
+            {
+            'id': '/terra/test/aws/2.0.0',
+            'owner': 'noone',
+            'namespace': 'terra',
+            'name': 'test',
+            'version': '2.0.0',
+            'provider': 'aws',
+            'description': 'Fake Module.',
+            'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+            'published_at': '2021-10-17T01:22:17.792066Z',
+            'downloads': 213,
+            'verified': True
+            }
+        ]
+    }
+    rv = client.get("/v1/modules/")
+    assert rv.status_code == 200
+    assert json.loads(rv.data) == details
+
+def test_get_all_modules_limit2(client):
+    details={
+        'meta': {
+            'limit': 1,
+            'current_offset': 0,
+        },
+        'modules': [
+            {
+            'id': '/terra/test/aws/2.0.0',
+            'owner': 'noone',
+            'namespace': 'terra',
+            'name': 'test',
+            'version': '2.0.0',
+            'provider': 'aws',
+            'description': 'Fake Module.',
+            'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+            'published_at': '2021-10-17T01:22:17.792066Z',
+            'downloads': 213,
+            'verified': True
+            }
+        ]
+    }
+    rv = client.get("/v1/modules/?limit=2")
+    assert rv.status_code == 200
+    assert json.loads(rv.data) == details
