@@ -159,3 +159,51 @@ def test_get_none_terra2_modules(client):
     rv = client.get("/v1/modules/terra2")
     assert rv.status_code == 200
     assert json.loads(rv.data) == details
+
+
+def test_search_module_1result(client):
+    rv = client.get("/v1/modules/search?q=/terra/test/aws")
+    assert rv.status_code == 200
+
+
+def test_search_module_0result(client):
+    rv = client.get("/v1/modules/search?q=/terra2/test/aws")
+    assert rv.status_code == 200
+
+
+def test_search_module_2result(client):
+    rv = client.get("/v1/modules/search?q=/terra/test")
+    assert rv.status_code == 200
+
+
+def test_get_latest_for_all_found(client):
+    rv = client.get("/v1/modules/terra/test")
+    assert rv.status_code == 200
+
+
+def test_get_latest_for_all_notfound(client):
+    rv = client.get("/v1/modules/terra2/test")
+    assert rv.status_code == 404
+    assert rv.data == b'Module Not Found: /terra2/test'
+
+
+def test_get_latest_for_provider_found(client):
+    rv = client.get("/v1/modules/terra/test/aws")
+    assert rv.status_code == 200
+
+
+def test_get_latest_for_provider_notfound(client):
+    rv = client.get("/v1/modules/terra2/test/aws")
+    assert rv.status_code == 404
+    assert rv.data == b'Module Not Found: /terra2/test/aws'
+
+
+def test_get_module_details_notfound(client):
+    rv = client.get("/v1/modules/terra2/test/aws/2.0.0")
+    assert rv.status_code == 404
+    assert rv.data == b'Module Not Found: /terra2/test/aws'
+
+
+def test_get_module_details_found(client):
+    rv = client.get("/v1/modules/terra/test/aws/2.0.0")
+    assert rv.status_code == 200
