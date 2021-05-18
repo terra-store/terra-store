@@ -168,7 +168,10 @@ def search_modules(query):
     """Search the module list based on the query
 
     Args:
-        query (str): [description]
+        query (str): Query string used for the search
+    
+    Returns:
+        json: List of modules including details
     """
     modules = [module for module in dummy_data['modules'] if query in module]
 
@@ -183,6 +186,15 @@ def search_modules(query):
 
 
 def get_latest_all_providers(namespace, name):
+    """Get Lastest versions for each deployed provider.
+
+    Args:
+        namespace (str): namespace for the version
+        name (str): Name of the module
+
+    Returns:
+        [type]: [description]
+    """
     module_name = "/{namespace}/{name}/".format(
         namespace=namespace, name=name)
 
@@ -194,10 +206,21 @@ def get_latest_all_providers(namespace, name):
             "current_offset": 0
         },
         "modules": get_module_details(providers)
-        }
+    }
 
 
 def get_extended_details(namespace, name, provider, version):
+    """Get Module with fully extended details.
+
+    Args:
+        namespace (str): namespace for the version
+        name (str): Name of the module
+        provider (str): Provider for the module
+        version (str): Version for the module
+
+    Returns:
+        [type]: [description]
+    """
     module_name = "{namespace}/{name}/{provider}/{version}".format(
         namespace=namespace, name=name,
         provider=provider, version=version)
@@ -239,6 +262,20 @@ def get_extended_details(namespace, name, provider, version):
 
 
 def get_module(namespace, name, provider, version=None):
+    """Get module with extended details
+
+    Args:
+        namespace (str): namespace for the version
+        name (str): Name of the module
+        provider (str): Provider for the module
+        version (str, optional): Version for the module. Defaults to None.
+
+    Raises:
+        ModuleNotFoundException: If module not found raise exception
+
+    Returns:
+        json: Module details with all extended attributes
+    """
     if version is None:
         version = "2.0.0"
     module_name = "/{namespace}/{name}/{provider}".format(
