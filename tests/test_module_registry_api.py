@@ -352,7 +352,7 @@ def test_get_latest_for_provider_found(client):
         ],
         "versions": [
             "1.0.0",
-            "1.1.0"
+            "1.1.0",
             "2.0.0"
         ]
     }
@@ -404,7 +404,7 @@ def test_get_module_details_found(client):
         ],
         "versions": [
             "1.0.0",
-            "1.1.0"
+            "1.1.0",
             "2.0.0"
         ]
     }

@@ -256,7 +256,7 @@ def get_extended_details(namespace, name, provider, version):
         ],
         "versions": [
             "1.0.0",
-            "1.1.0"
+            "1.1.0",
             "2.0.0"
         ]
     }
