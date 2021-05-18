@@ -12,6 +12,13 @@ dummy_data = {
                     "1.1.0",
                     "2.0.0"
                 ]
+            },
+            "/terra/k8s/aws": {
+                "versions": [
+                    "1.0.0",
+                    "1.1.0",
+                    "2.0.0"
+                ]
             }
         }
 }
@@ -115,12 +122,11 @@ def get_modules(namespace=None):
         modules = dummy_data['modules'].keys()
     else:
         search_string = "/" + namespace
-        for module in dummy_data['modules']:
-            if module.startswith(search_string):
-                modules.append(module)
+        modules = [module for module in dummy_data['modules']
+                   if module.startswith(search_string)]
     details = {
         'meta': {
-            'limit': len(modules),
+            'limit': 0,
             'current_offset': 0,
         },
         'modules': get_module_details(modules)
@@ -156,3 +162,89 @@ def get_module_details(modules):
         }
         module_details.append(details)
     return module_details
+
+
+def search_modules(query):
+    """Search the module list based on the query
+
+    Args:
+        query (str): [description]
+    """
+    modules = [module for module in dummy_data['modules'] if query in module]
+
+    response = {
+        "meta": {
+            "limit": 0,
+            "current_offset": 0,
+        },
+        "modules": get_module_details(modules)
+    }
+    return response
+
+
+def get_latest_all_providers(namespace, name):
+    module_name = "/{namespace}/{name}/".format(
+        namespace=namespace, name=name)
+
+    providers = [module for module in dummy_data['modules']
+                 if module.startswith(module_name)]
+    return {
+        "meta": {
+            "limit": 0,
+            "current_offset": 0
+        },
+        "modules": get_module_details(providers)
+        }
+
+
+def get_extended_details(namespace, name, provider, version):
+    module_name = "{namespace}/{name}/{provider}/{version}".format(
+        namespace=namespace, name=name,
+        provider=provider, version=version)
+    return {
+        'id': module_name,
+        'owner': 'noone',
+        'namespace': namespace,
+        'name': name,
+        'version': version,
+        'provider': provider,
+        'description': 'Fake Module.',
+        'source': 'http://localhost:5000/storage/{module}'.format(
+                   module=module_name),
+        'published_at': '2021-10-17T01:22:17.792066Z',
+        'downloads': 213,
+        'verified': True,
+        "root": {
+            "path": "",
+            "readme": "# Title",
+            "empty": False,
+            "inputs": [
+            ],
+            "outputs": [
+            ],
+            "dependencies": [],
+            "resources": []
+        },
+        "submodules": [
+        ],
+        "providers": [
+            "aws",
+        ],
+        "versions": [
+            "1.0.0",
+            "1.1.0"
+            "2.0.0"
+        ]
+    }
+
+
+def get_module(namespace, name, provider, version=None):
+    if version is None:
+        version = "2.0.0"
+    module_name = "/{namespace}/{name}/{provider}".format(
+        namespace=namespace, name=name, provider=provider)
+    if module_name in dummy_data['modules'].keys() and \
+            version in dummy_data['modules'][module_name]['versions']:
+        module = get_extended_details(namespace, name, provider, version)
+        return module
+    raise ModuleNotFoundException("Module Not Found: " + module_name)
