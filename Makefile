@@ -21,7 +21,7 @@ run:
 	python3 terraform_registry_api/registry.py
 
 prod-run: production
-	docker run -d -p 8080 test:latest
+	docker run -d -p 8080:8080 test:latest
 
 production: build test
 	docker build \
