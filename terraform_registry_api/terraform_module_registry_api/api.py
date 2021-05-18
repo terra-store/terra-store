@@ -105,14 +105,17 @@ def download_version(namespace, name, provider, version):
         return make_response(module_not_found.message, 404)
 
 
-def search_modules():
+def search_modules(q):
     """Search modules based on the query.
+
+    Args:
+        q (str, optional): Ther query string to search for. Defaults to None.
 
     Returns:
         response: list of modules matching the
                   relevant search query as json
     """
-    return make_response("", 404)
+    return make_response(backend.search_modules(q), 200)
 
 
 def get_latest_for_all_providers(namespace, name):
@@ -125,7 +128,8 @@ def get_latest_for_all_providers(namespace, name):
     Returns:
         json: Details of vesion for each provider
     """
-    return make_response("", 404)
+    return make_response(backend.get_latest_all_providers(namespace, name),
+                         200)
 
 
 def get_latest_for_provider(namespace, name, provider):
@@ -139,7 +143,11 @@ def get_latest_for_provider(namespace, name, provider):
     Returns:
         response: JSON formatted respnse
     """
-    return make_response("", 404)
+    try:
+        return make_response(backend.get_module(
+            namespace, name, provider), 200)
+    except ModuleNotFoundException as module_not_found:
+        return make_response(module_not_found.message, 404)
 
 
 def get_module(namespace, name, provider, version):
@@ -154,7 +162,11 @@ def get_module(namespace, name, provider, version):
     Returns:
         response: JSON formatted respnse
     """
-    return make_response("", 404)
+    try:
+        return make_response(backend.get_module(
+            namespace, name, provider, version), 200)
+    except ModuleNotFoundException as module_not_found:
+        return make_response(module_not_found.message, 404)
 
 
 def download_latest(namespace, name, provider):
