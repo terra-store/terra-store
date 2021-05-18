@@ -165,11 +165,11 @@ def get_module_details(modules):
 
 
 def search_modules(query):
-    """Search the module list based on the query
+    """Search the module list based on the query.
 
     Args:
         query (str): Query string used for the search
-    
+
     Returns:
         json: List of modules including details
     """
@@ -182,31 +182,32 @@ def search_modules(query):
         },
         "modules": get_module_details(modules)
     }
-    return response
+    return json.dumps(response)
 
 
 def get_latest_all_providers(namespace, name):
-    """Get Lastest versions for each deployed provider.
+    """Get Latest versions for each deployed provider.
 
     Args:
         namespace (str): namespace for the version
         name (str): Name of the module
 
     Returns:
-        [type]: [description]
+        json: List of all provders and latest version for
+        defined namespace and name
     """
     module_name = "/{namespace}/{name}/".format(
         namespace=namespace, name=name)
 
     providers = [module for module in dummy_data['modules']
                  if module.startswith(module_name)]
-    return {
+    return json.dumps({
         "meta": {
             "limit": 0,
             "current_offset": 0
         },
         "modules": get_module_details(providers)
-    }
+    })
 
 
 def get_extended_details(namespace, name, provider, version):
@@ -219,7 +220,7 @@ def get_extended_details(namespace, name, provider, version):
         version (str): Version for the module
 
     Returns:
-        [type]: [description]
+        dict: dict with all the module extended metadata
     """
     module_name = "{namespace}/{name}/{provider}/{version}".format(
         namespace=namespace, name=name,
@@ -233,7 +234,7 @@ def get_extended_details(namespace, name, provider, version):
         'provider': provider,
         'description': 'Fake Module.',
         'source': 'http://localhost:5000/storage/{module}'.format(
-                   module=module_name),
+            module=module_name),
         'published_at': '2021-10-17T01:22:17.792066Z',
         'downloads': 213,
         'verified': True,
@@ -262,7 +263,7 @@ def get_extended_details(namespace, name, provider, version):
 
 
 def get_module(namespace, name, provider, version=None):
-    """Get module with extended details
+    """Get module with extended details.
 
     Args:
         namespace (str): namespace for the version
@@ -274,7 +275,7 @@ def get_module(namespace, name, provider, version=None):
         ModuleNotFoundException: If module not found raise exception
 
     Returns:
-        json: Module details with all extended attributes
+        dict: Module details with all extended attributes
     """
     if version is None:
         version = "2.0.0"
@@ -282,6 +283,5 @@ def get_module(namespace, name, provider, version=None):
         namespace=namespace, name=name, provider=provider)
     if module_name in dummy_data['modules'].keys() and \
             version in dummy_data['modules'][module_name]['versions']:
-        module = get_extended_details(namespace, name, provider, version)
-        return module
+        return json.dumps(get_extended_details(namespace, name, provider, version))
     raise ModuleNotFoundException("Module Not Found: " + module_name)
