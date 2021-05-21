@@ -28,7 +28,6 @@ The goals of the project in the first milestone are as follows:
 -   [ ] Add Provider Registry Support
 -   [ ] Add S3 based backend
 
-
 ## Build Instructions
 
 The project is using make to simplify the local build and CI build process
