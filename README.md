@@ -13,19 +13,23 @@ It is currently in an early development phase with only a dummy backend supporte
 The goals of the project in the first milestone are as follows:
 
 -   [x] Establish Repositories and projects in Github
--   [ ] Setup basic Open Source Documentation and practices
+-   [x] Setup basic Open Source Documentation and practices
 -   [x] Create Extended modules API 
 -   [x] Establish CI and Code Quality for the project
 -   [x] Implement Unit test patterns
--   [x] Implement Integration Test patterns
+-   [ ] Implement Integration Test patterns
 -   [ ] Automated tests using terraform cli (fully integrated tests) - 0.15.3
 -   [ ] Document processes to make project easier for future contributers
 -   [ ] Add extensible backend system, implement filesystem only in M1
 -   [ ] Add yaml configuration system
 
-### Milestone 3 - Providers API and S3 Backend
+### Milestone 2 - Providers API and S3 Backend
 
-## Build Instrictions
+-   [ ] Add Provider Registry Support
+-   [ ] Add S3 based backend
+
+
+## Build Instructions
 
 The project is using make to simplify the local build and CI build process
 
