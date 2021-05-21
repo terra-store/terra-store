@@ -6,9 +6,9 @@ Terra-Store is an open source implementation of the terraform registry api for m
 
 It is currently in an early development phase with only a dummy backend supported.
 
-# Project Status
+## Project Status
 
-## Milestone 1 - Project Setup and basic modules API implementation
+### Milestone 1 - Project Setup and basic modules API implementation
 
 The goals of the project in the first milestone are as follows:
 
@@ -23,13 +23,13 @@ The goals of the project in the first milestone are as follows:
 -   [ ] Add extensible backend system, implement filesystem only in M1
 -   [ ] Add yaml configuration system
 
-## Milestone 3 - Providers API and S3 Backend
+### Milestone 3 - Providers API and S3 Backend
 
-# Build Instrictions
+## Build Instrictions
 
 The project is using make to simplify the local build and CI build process
 
-## Prequisites
+### Prequisites
 
 -   Make
 -   Python 3.6+
@@ -40,7 +40,7 @@ The project is using make to simplify the local build and CI build process
 2.  create a python virtualenv: `python3 -m venv venv`
 3.  Activate the viurtual env: `source venv/bin/activate`
 
-## Building and Testing
+### Building and Testing
 
 All build and test commands are invoked by running: `make <target>`
 
