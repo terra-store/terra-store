@@ -17,15 +17,15 @@ test: build ## Run all test packages
 	coverage report -m
 	coverage xml
 
-run: ## Run local version of flask app 
+debug: ## Run local version of flask app 
 	python3 terraform_registry_api/registry.py
 
-production: build test ## Build production container
+container: build test ## Build local container
 	docker build \
 	  --file=./Dockerfile \
 	  --tag=test .
 
-prod-run: production ## Runs production container with port 8080 mapped
+run: production ## Run container with port 8080 mapped
 	docker run -d -p 8080:8080 test:latest
 
 help: ## Display this help text

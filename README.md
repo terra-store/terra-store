@@ -47,14 +47,15 @@ The project is using make to simplify the local build and CI build process
 
 All build and test commands are invoked by running: `make <target>`
 
-### Supported targets
+#### Supported targets
 
-| Target     | Description                                     |
-| ---------- | ----------------------------------------------- |
-| build      | Builds the terra-store wheel                    |
-| clean      | Clean up build artifacts                        |
-| help       | Display this help text                          |
-| production | Build production container                      |
-| prod-run   | Runs production container with port 8080 mapped |
-| run        | Run local version of flask app                  |
-| test       | Run all test packages                           |
+| Target    | Description                         |
+| --------- | ----------------------------------- |
+| build     | Builds the terra-store wheel        |
+| clean     | Clean up build artifacts            |
+| container | Build local container               |
+| debug     | Run local version of flask app      |
+| help      | Display this help text              |
+| lint      | Lint the project                    |
+| run       | run container with port 8080 mapped |
+| test      | Run all test packages               |
