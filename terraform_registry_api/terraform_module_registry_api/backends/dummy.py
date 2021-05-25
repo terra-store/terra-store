@@ -283,5 +283,8 @@ def get_module(namespace, name, provider, version=None):
         namespace=namespace, name=name, provider=provider)
     if module_name in dummy_data['modules'].keys() and \
             version in dummy_data['modules'][module_name]['versions']:
-        return json.dumps(get_extended_details(namespace, name, provider, version))
+        return json.dumps(get_extended_details(namespace,
+                                               name,
+                                               provider,
+                                               version))
     raise ModuleNotFoundException("Module Not Found: " + module_name)
