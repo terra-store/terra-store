@@ -44,7 +44,7 @@ def test_list_versions_valid(client):
         ]
     }
     assert rv.status_code == 200
-    assert json.loads(rv.data) == json.dumps(versions)
+    assert json.loads(rv.data) == versions
 
 
 def test_list_versions_modulenotfound(client):

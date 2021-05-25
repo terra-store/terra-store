@@ -79,7 +79,7 @@ def list_versions(namespace, name, provider):
         response: JSON formatted respnse
     """
     try:
-        return backend.get_versions(namespace, name, provider)
+        return make_response(backend.get_versions(namespace, name, provider), 200)
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
 
