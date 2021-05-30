@@ -19,7 +19,7 @@ if [ $? -ne 0 ] ; then
   exit -1
 fi
 # wait for the test service to complete and grab the exit code
-TEST_EXIT_CODE=`docker wait terra-store_terraform_1`
+TEST_EXIT_CODE=$(docker wait terra-store_terraform_1)
 # output the logs for the test (for clarity)
 docker logs terra-store_terraform_1
 # inspect the output of the test and display respective message

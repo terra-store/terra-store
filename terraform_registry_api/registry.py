@@ -3,6 +3,7 @@ import connexion
 from flask import request, make_response
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+
 def create_app():
     """Create and configure Flask API.
 
@@ -31,8 +32,8 @@ def create_app():
             "providers.v1": "{root}v1/providers".format(root=request.url_root)
         }
         resp = make_response(json.dumps(services), 200)
-        resp.content_type="application/json"
-        return resp 
+        resp.content_type = "application/json"
+        return resp
     return app
 
 
