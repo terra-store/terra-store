@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    expose: 
+      - 8080
+    networks:
+      - ts.int
+  proxy:
+    build: 
+      context: integration-tests
+      dockerfile: Dockerfile.proxy
+    links:
+      - api
+    networks:
+      - ts.int
+    expose:
+      - 443
+  terraform:
+    build: integration-tests
+    links:
+      - proxy
+    networks:
+      - ts.int
+    entrypoint: sleep 36000
+networks: 
+    ts.int:
+        name: ts.int
