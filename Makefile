@@ -26,7 +26,7 @@ ssl: ## generate self-signed certificate
     -reqexts san -extensions san \
     -config integration-tests/nginx/config.cnf
 
-integration-tests: ssl # Run integration tests
+integration-tests: ssl ## Run integration tests
 	./integration-tests/test.sh
 
 debug: ## Run local version of flask app 
