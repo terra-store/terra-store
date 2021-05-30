@@ -1,6 +1,7 @@
 import json
 import connexion
-
+from flask import request, make_response
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 def create_app():
     """Create and configure Flask API.
@@ -12,6 +13,7 @@ def create_app():
     """
     # Create the application instance
     app = connexion.App(__name__, specification_dir="./")
+    app.app.wsgi_app = ProxyFix(app.app.wsgi_app)
 
     # Read the swagger.yml file to configure the endpoints
     app.add_api("terraform_module_registry_api/swagger.yml")
@@ -23,11 +25,14 @@ def create_app():
         Returns:
             json: Descprion of the supported apis and the base urls
         """
+        print(request.url)
         services = {
-            "modules.v1": "http://localhost:5000/v1/modules",
-            "providers.v1": "http://localhost:5000/v1/providers"
+            "modules.v1": "{root}v1/modules".format(root=request.url_root),
+            "providers.v1": "{root}v1/providers".format(root=request.url_root)
         }
-        return json.dumps(services)
+        resp = make_response(json.dumps(services), 200)
+        resp.content_type="application/json"
+        return resp 
     return app
 
 

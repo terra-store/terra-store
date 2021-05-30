@@ -14,8 +14,8 @@ def client():
 def test_service_discovery_endpoint(client):
     """Start with a blank database."""
     services = {
-        "modules.v1": "http://localhost:5000/v1/modules",
-        "providers.v1": "http://localhost:5000/v1/providers"
+        "modules.v1": "http://localhost/v1/modules",
+        "providers.v1": "http://localhost/v1/providers"
     }
     rv = client.get('/.well-known/terraform.json')
     assert rv.status_code == 200
