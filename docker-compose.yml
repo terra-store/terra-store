@@ -22,7 +22,8 @@ services:
       - proxy
     networks:
       - ts.int
-    entrypoint: sleep 36000
+    entrypoint: sleep 36; terraform
+    command: init
 networks: 
     ts.int:
         name: ts.int
