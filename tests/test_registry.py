@@ -7,8 +7,8 @@ from terraform_registry_api import registry
 @pytest.fixture
 def client():
     app = registry.create_app()
-    app.app.testing = True
-    yield app.app.test_client()
+    app.testing = True
+    yield app.test_client()
 
 
 def test_service_discovery_endpoint(client):

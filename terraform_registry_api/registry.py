@@ -34,9 +34,4 @@ def create_app():
         resp = make_response(json.dumps(services), 200)
         resp.content_type = "application/json"
         return resp
-    return app
-
-
-if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    return app.app

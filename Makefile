@@ -30,7 +30,7 @@ integration-tests: ssl ## Run integration tests
 	./integration-tests/test.sh
 
 debug: ## Run local version of flask app 
-	python3 terraform_registry_api/registry.py
+	FLASK_APP=terraform_registry_api/registry.py:create_app FLASK_ENV=development flask run
 
 container: build test ## Build local container
 	docker build \
