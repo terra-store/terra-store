@@ -7,7 +7,7 @@ from terraform_registry_api.terraform_module_registry_api.exceptions \
 
 
 class Dummy(AbstractBackend):
-    """Dummy implementation of backend used for testing"""
+    """Dummy implementation of backend used for testing."""
 
     dummy_data = {
         "modules":
