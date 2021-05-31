@@ -130,38 +130,9 @@ class Dummy(AbstractBackend):
                 'limit': 0,
                 'current_offset': 0,
             },
-            'modules': self.get_module_details(modules)
+            'modules': get_module_details(modules)
         }
         return json.dumps(details)
-
-    def get_module_details(self, modules):
-        """Get extended details for the modules in the list.
-
-        Args:
-            modules (list): [description]
-
-        Returns:
-            list: List of modules including details
-        """
-        module_details = []
-        for mod in modules:
-            data = mod.split("/")
-            details = {
-                'id': '{module}/2.0.0'.format(module=mod),
-                'owner': 'noone',
-                'namespace': data[1],
-                'name': data[2],
-                'version': '2.0.0',
-                'provider': data[3],
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage{module}/2.0.0'.format(
-                    module=mod),
-                'published_at': '2021-10-17T01:22:17.792066Z',
-                'downloads': 213,
-                'verified': True
-            }
-            module_details.append(details)
-        return module_details
 
     def search_modules(self, query):
         """Search the module list based on the query.
@@ -180,7 +151,7 @@ class Dummy(AbstractBackend):
                 "limit": 0,
                 "current_offset": 0,
             },
-            "modules": self.get_module_details(modules)
+            "modules": get_module_details(modules)
         }
         return json.dumps(response)
 
@@ -205,59 +176,8 @@ class Dummy(AbstractBackend):
                 "limit": 0,
                 "current_offset": 0
             },
-            "modules": self.get_module_details(providers)
+            "modules": get_module_details(providers)
         })
-
-    def get_extended_details(self, namespace, name, provider, version):
-        """Get Module with fully extended details.
-
-        Args:
-            namespace (str): namespace for the version
-            name (str): Name of the module
-            provider (str): Provider for the module
-            version (str): Version for the module
-
-        Returns:
-            dict: dict with all the module extended metadata
-        """
-        module_name = "{namespace}/{name}/{provider}/{version}".format(
-            namespace=namespace, name=name,
-            provider=provider, version=version)
-        return {
-            'id': module_name,
-            'owner': 'noone',
-            'namespace': namespace,
-            'name': name,
-            'version': version,
-            'provider': provider,
-            'description': 'Fake Module.',
-            'source': 'http://localhost:5000/storage/{module}'.format(
-                module=module_name),
-            'published_at': '2021-10-17T01:22:17.792066Z',
-            'downloads': 213,
-            'verified': True,
-            "root": {
-                "path": "",
-                "readme": "# Title",
-                "empty": False,
-                "inputs": [
-                ],
-                "outputs": [
-                ],
-                "dependencies": [],
-                "resources": []
-            },
-            "submodules": [
-            ],
-            "providers": [
-                "aws",
-            ],
-            "versions": [
-                "1.0.0",
-                "1.1.0",
-                "2.0.0"
-            ]
-        }
 
     def get_module(self, namespace, name, provider, version=None):
         """Get module with extended details.
@@ -280,5 +200,90 @@ class Dummy(AbstractBackend):
             namespace=namespace, name=name, provider=provider)
         if module_name in self.dummy_data['modules'].keys() and \
                 version in self.dummy_data['modules'][module_name]['versions']:
-            return json.dumps(self.get_extended_details(namespace, name, provider, version))
+            return json.dumps(get_extended_details(namespace,
+                                                   name,
+                                                   provider,
+                                                   version))
         raise ModuleNotFoundException("Module Not Found: " + module_name)
+
+
+def get_extended_details(namespace, name, provider, version):
+    """Get Module with fully extended details.
+
+    Args:
+        namespace (str): namespace for the version
+        name (str): Name of the module
+        provider (str): Provider for the module
+        version (str): Version for the module
+
+    Returns:
+        dict: dict with all the module extended metadata
+    """
+    module_name = "{namespace}/{name}/{provider}/{version}".format(
+        namespace=namespace, name=name,
+        provider=provider, version=version)
+    return {
+        'id': module_name,
+        'owner': 'noone',
+        'namespace': namespace,
+        'name': name,
+        'version': version,
+        'provider': provider,
+        'description': 'Fake Module.',
+        'source': 'http://localhost:5000/storage/{module}'.format(
+            module=module_name),
+        'published_at': '2021-10-17T01:22:17.792066Z',
+        'downloads': 213,
+        'verified': True,
+        "root": {
+            "path": "",
+            "readme": "# Title",
+            "empty": False,
+            "inputs": [
+            ],
+            "outputs": [
+            ],
+            "dependencies": [],
+            "resources": []
+        },
+        "submodules": [
+        ],
+        "providers": [
+            "aws",
+        ],
+        "versions": [
+            "1.0.0",
+            "1.1.0",
+            "2.0.0"
+        ]
+    }
+
+
+def get_module_details(modules):
+    """Get extended details for the modules in the list.
+
+    Args:
+        modules (list): [description]
+
+    Returns:
+        list: List of modules including details
+    """
+    module_details = []
+    for mod in modules:
+        data = mod.split("/")
+        details = {
+            'id': '{module}/2.0.0'.format(module=mod),
+            'owner': 'noone',
+            'namespace': data[1],
+            'name': data[2],
+            'version': '2.0.0',
+            'provider': data[3],
+            'description': 'Fake Module.',
+            'source': 'http://localhost:5000/storage{module}/2.0.0'.format(
+                module=mod),
+            'published_at': '2021-10-17T01:22:17.792066Z',
+            'downloads': 213,
+            'verified': True
+        }
+        module_details.append(details)
+    return module_details

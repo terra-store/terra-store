@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class AbstractBackend(ABC):
-    """Abstract Class structuring the necessary methods for each backend to
-    implement."""
+    """Abstract Class defining the backend structure"""
 
     @abstractmethod
     def get_versions(self, namespace, name, provider):
