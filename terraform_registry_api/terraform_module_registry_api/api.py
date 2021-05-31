@@ -1,9 +1,7 @@
-from flask import make_response, redirect
+from flask import make_response, redirect, request
 
-from terraform_registry_api.terraform_module_registry_api.backends \
-    import Dummy
-from terraform_registry_api.terraform_module_registry_api.exceptions \
-    import ModuleNotFoundException
+from .backends import Dummy
+from .exceptions import ModuleNotFoundException
 
 backend = Dummy()
 
@@ -100,8 +98,14 @@ def download_version(namespace, name, provider, version):
     """
     try:
         resp = make_response('', 204)
-        resp.headers['X-Terraform-Get'] = backend.download_version(
+        artifact = backend.download_version(
             namespace, name, provider, version)
+        if artifact.startswith("http"):
+            final_artifact = artifact
+        else:
+            final_artifact = "{root}dl/module/{artifact}".format(root=request.url_root,
+                                                                 artifact=artifact)
+        resp.headers['X-Terraform-Get'] = final_artifact
         return resp
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)

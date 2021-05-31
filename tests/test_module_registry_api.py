@@ -18,6 +18,13 @@ def test_download_module_valid(client):
         "https://api.github.com/repos/terra/aws-test/v2.0.0"
 
 
+def test_download_module_valid_relative(client):
+    rv = client.get('/v1/modules/terra/k8s/aws/2.0.0/download')
+    assert rv.status_code == 204
+    assert rv.headers['X-Terraform-Get'] == \
+        "http://localhost/dl/module/terra/aws-k8s/v2.0.0"
+
+
 def test_download_module_versionnotfound(client):
     rv = client.get('/v1/modules/terra/test/aws/2.1.0/download')
     assert rv.status_code == 404

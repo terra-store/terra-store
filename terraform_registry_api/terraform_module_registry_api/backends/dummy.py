@@ -78,9 +78,12 @@ class Dummy(AbstractBackend):
             namespace=namespace, name=name, provider=provider)
         if module_name in self.dummy_data['modules'].keys() and \
                 version in self.dummy_data['modules'][module_name]['versions']:
-
-            return "{base_url}/{namespace}/{provider}-{name}/v{version}".format(
-                provider=provider, base_url="https://api.github.com/repos",
+            if name == "k8s":
+                base_url = ""
+            else:
+                base_url = "https://api.github.com/repos/"
+            return "{base_url}{namespace}/{provider}-{name}/v{version}".format(
+                provider=provider, base_url=base_url,
                 name=name, version=version, namespace=namespace)
         raise ModuleNotFoundException("Module Not Found: " + module_name)
 
