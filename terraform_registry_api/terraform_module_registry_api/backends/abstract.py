@@ -19,7 +19,6 @@ class AbstractBackend(ABC):
         Returns:
             json: JSON object containing the versions of the module on the server
         """
-        pass  # pragma: no cover
 
     @abstractmethod
     def download_version(self, namespace, name, provider, version):
@@ -37,7 +36,6 @@ class AbstractBackend(ABC):
         Returns:
             str: Download url of the module itself
         """
-        pass  # pragma: no cover
 
     @abstractmethod
     def download_latest(self, namespace, name, provider):
@@ -57,7 +55,6 @@ class AbstractBackend(ABC):
         Returns:
             str: URL for downloading module
         """
-        pass  # pragma: no cover
 
     @abstractmethod
     def get_modules(self, namespace=None):
@@ -69,7 +66,6 @@ class AbstractBackend(ABC):
         Returns:
             json: JSON representation of the modules within the namespace
         """
-        pass  # pragma: no cover
 
     @abstractmethod
     def search_modules(self, query):
@@ -81,7 +77,6 @@ class AbstractBackend(ABC):
         Returns:
             json: List of modules including details
         """
-        pass  # pragma: no cover
 
     @abstractmethod
     def get_latest_all_providers(self, namespace, name):
@@ -95,7 +90,6 @@ class AbstractBackend(ABC):
             json: List of all provders and latest version for
             defined namespace and name
         """
-        pass  # pragma: no cover
 
     @abstractmethod
     def get_module(self, namespace, name, provider, version=None):
@@ -113,4 +107,3 @@ class AbstractBackend(ABC):
         Returns:
             dict: Module details with all extended attributes
         """
-        pass  # pragma: no cover
