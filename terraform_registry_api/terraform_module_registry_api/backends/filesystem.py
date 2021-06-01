@@ -14,6 +14,14 @@ class Filesystem(AbstractBackend):
     """Backend using local Filesystem for storage."""
 
     def __init__(self, basedirectory):
+        """Instantiate Filesystem backend.
+
+        Instantiate Filesystem backendusing basedirectory for
+        the root of the modules
+
+        Args:
+            basedirectory (str): basedirectory for modules.
+        """
         self.basedir = basedirectory
         super().__init__()
 
@@ -70,7 +78,17 @@ class Filesystem(AbstractBackend):
         else:
             raise ModuleNotFoundException("Module Not Found")
 
-    def determine_latest(self, namespace, name, provider):
+    def __determine_latest(self, namespace, name, provider):
+        """Get latest version of module.
+
+        Args:
+            namespace (str): namespace for the version
+            name (str): Name of the module
+            provider (str): Provider for the module
+
+        Returns:
+            [str]: Latest version found.
+        """
         provider_dir = join(self.basedir, namespace, name, provider)
         versions = [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
         versions.sort(key=StrictVersion)
@@ -96,7 +114,7 @@ class Filesystem(AbstractBackend):
         """
         provider_dir = join(self.basedir, namespace, name, provider)
         if exists(provider_dir):
-            latest_version = self.determine_latest(namespace, name, provider)
+            latest_version = self.__determine_latest(namespace, name, provider)
             url = "{base_url}/{namespace}/{name}/{provider}/{version}/download".format(
                 namespace=namespace, name=name,
                 provider=provider, version=latest_version,
@@ -119,13 +137,13 @@ class Filesystem(AbstractBackend):
             namespaces = []
         else:
             namespaces = [namespace]
-        modules = self.get_all_modules(namespaces)
+        modules = self.__get_all_modules(namespaces)
         details = {
             'meta': {
                 'limit': 0,
                 'current_offset': 0,
             },
-            'modules': self.get_module_details(baseurl, modules)
+            'modules': self.__get_module_details(baseurl, modules)
         }
         return json.dumps(details)
 
@@ -138,7 +156,7 @@ class Filesystem(AbstractBackend):
         Returns:
             json: List of modules including details
         """
-        all_modules = self.get_all_modules(basename(f.path)
+        all_modules = self.__get_all_modules(basename(f.path)
                                            for f in scandir(self.basedir) if f.is_dir())
         modules = [module for module in all_modules if query.lstrip('/') in module]
         results = {
@@ -146,7 +164,7 @@ class Filesystem(AbstractBackend):
                 "limit": 0,
                 "current_offset": 0,
             },
-            "modules": self.get_module_details(baseurl, modules)
+            "modules": self.__get_module_details(baseurl, modules)
         }
         return json.dumps(results)
 
@@ -171,7 +189,7 @@ class Filesystem(AbstractBackend):
                 "limit": 0,
                 "current_offset": 0
             },
-            "modules": self.get_module_details(baseurl, providers)
+            "modules": self.__get_module_details(baseurl, providers)
         })
 
     def get_module(self, baseurl, namespace, name, provider, version=None):
@@ -192,9 +210,9 @@ class Filesystem(AbstractBackend):
         provider_dir = join(self.basedir, namespace, name, provider)
         if exists(provider_dir):
             if version is None:
-                version = self.determine_latest(namespace, name, provider)
+                version = self.__determine_latest(namespace, name, provider)
 
-            return json.dumps(self.get_extended_details(baseurl,
+            return json.dumps(self.__get_extended_details(baseurl,
                                                         namespace,
                                                         name,
                                                         provider,
@@ -202,7 +220,7 @@ class Filesystem(AbstractBackend):
         else:
             raise ModuleNotFoundException("Module Not Found")
 
-    def get_extended_details(self, baseurl, namespace, name, provider, version):
+    def __get_extended_details(self, baseurl, namespace, name, provider, version):
         """Get Module with fully extended details.
 
         Args:
@@ -222,7 +240,7 @@ class Filesystem(AbstractBackend):
                             name,
                             provider)
         mod_dir = join(self.basedir, namespace, name)
-        meta = self.load_metadata(namespace, name)
+        meta = self.__load_metadata(namespace, name)
         print(meta)
         return {
             'id': module_name,
@@ -254,11 +272,11 @@ class Filesystem(AbstractBackend):
             "versions": [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
         }
 
-    def get_module_details(self, baseurl, modules):
+    def __get_module_details(self, baseurl, modules):
         """Get extended details for the modules in the list.
 
         Args:
-            modules (list): [description]
+            modules (list): List of modules to get the details for.
 
         Returns:
             list: List of modules including details
@@ -266,8 +284,8 @@ class Filesystem(AbstractBackend):
         module_details = []
         for mod in modules:
             data = mod.split("/")
-            version = self.determine_latest(data[0], data[1], data[2])
-            meta = self.load_metadata(data[0], data[1])
+            version = self.__determine_latest(data[0], data[1], data[2])
+            meta = self.__load_metadata(data[0], data[1])
             details = {
                 'id': '/{module}/{version}'.format(
                     module=mod, version=version),
@@ -286,13 +304,30 @@ class Filesystem(AbstractBackend):
             module_details.append(details)
         return module_details
 
-    def load_metadata(self, namespace, name):
+    def __load_metadata(self, namespace, name):
+        """Load the module metadata from the filesystem.
+
+        Args:
+            namespace (str): namespace for the version
+            name (str): Name of the module
+
+        Returns:
+            dict: Full metadata dictonary for the module.
+        """
         metafile = join(self.basedir, namespace, name, "module_metadata.yaml")
         if exists(metafile):
             with open(metafile) as metayaml:
                 return yaml.safe_load(metayaml)
 
-    def get_all_modules(self, namespaces):
+    def __get_all_modules(self, namespaces):
+        """Get all modules within the listed namespaces.
+
+        Args:
+            namespaces (list): The namesapces in wbich to check for modules.
+
+        Returns:
+            list: List of modules in the namespaces
+        """
         modules = []
         for namespace in namespaces:
             nsdir = join(self.basedir, namespace)
