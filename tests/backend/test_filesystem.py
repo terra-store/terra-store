@@ -11,6 +11,7 @@ from terraform_registry_api.terraform_module_registry_api.backends \
 from terraform_registry_api.terraform_module_registry_api.exceptions \
     import ModuleNotFoundException
 
+
 def generate_metadata(basedir, namespace, name):
     filename = join(basedir, namespace, name, "module_metadata.yaml")
     if not exists(filename):
@@ -24,21 +25,21 @@ def generate_metadata(basedir, namespace, name):
             yaml.dump(data, modulefile)
 
 
-
 @pytest.fixture
 def backend():
-    os.makedirs("./tests/backend/modules/namespace1/sample1/gcp/1.0.0/", exist_ok=True)
-    os.mknod("./tests/backend/modules/namespace1/sample1/gcp/1.0.0/namespace1_sample1-gcp-1.0.0.tar.gz")
-    os.makedirs("./tests/backend/modules/namespace1/sample1/aws/1.0.0/", exist_ok=True)
-    os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.0.0/namespace1_sample1-aws-1.0.0.tar.gz")
-    os.makedirs("./tests/backend/modules/namespace1/sample1/aws/1.1.0/", exist_ok=True)
-    os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.1.0/namespace1_sample1-aws-1.1.0.tar.gz")
-    os.makedirs("./tests/backend/modules/namespace1/sample1/aws/2.0.0/", exist_ok=True)
-    os.mknod("./tests/backend/modules/namespace1/sample1/aws/2.0.0/namespace1_sample1-aws-2.0.0.tar.gz")
-    os.makedirs("./tests/backend/modules/namespace1/sample2/aws/1.0.0/", exist_ok=True)
-    os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.0.0/namespace1_sample2-aws-1.0.0.tar.gz")
-    os.makedirs("./tests/backend/modules/namespace1/sample2/aws/2.0.0/", exist_ok=True)
-    os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.0.0/namespace1_sample2-aws-2.0.0.tar.gz")
+    base = "./tests/backend/modules"
+    os.makedirs(join(base, "namespace1/sample1/gcp/1.0.0/"), exist_ok=True)
+    os.mknod(join(base, "namespace1/sample1/gcp/1.0.0/namespace1_sample1-gcp-1.0.0.tar.gz"))
+    os.makedirs(join(base, "namespace1/sample1/aws/1.0.0/"), exist_ok=True)
+    os.mknod(join(base, "namespace1/sample1/aws/1.0.0/namespace1_sample1-aws-1.0.0.tar.gz"))
+    os.makedirs(join(base, "namespace1/sample1/aws/1.1.0/"), exist_ok=True)
+    os.mknod(join(base, "namespace1/sample1/aws/1.1.0/namespace1_sample1-aws-1.1.0.tar.gz"))
+    os.makedirs(join(base, "namespace1/sample1/aws/2.0.0/"), exist_ok=True)
+    os.mknod(join(base, "namespace1/sample1/aws/2.0.0/namespace1_sample1-aws-2.0.0.tar.gz"))
+    os.makedirs(join(base, "namespace1/sample2/aws/1.0.0/"), exist_ok=True)
+    os.mknod(join(base, "namespace1/sample1/aws/1.0.0/namespace1_sample2-aws-1.0.0.tar.gz"))
+    os.makedirs(join(base, "namespace1/sample2/aws/2.0.0/"), exist_ok=True)
+    os.mknod(join(base, "namespace1/sample1/aws/1.0.0/namespace1_sample2-aws-2.0.0.tar.gz"))
     generate_metadata("./tests/backend/modules/", "namespace1", "sample1")
     generate_metadata("./tests/backend/modules/", "namespace1", "sample2")
     yield Filesystem("./tests/backend/modules")
@@ -82,7 +83,7 @@ def test_get_versions_invalid(backend):
 
 
 def test_download_latest_modulefound(backend):
-    response = backend.download_latest('http://localhost/', 'namespace1','sample1','aws')
+    response = backend.download_latest('http://localhost/', 'namespace1', 'sample1', 'aws')
     assert response == "http://localhost/v1/modules/namespace1/sample1/aws/2.0.0/download"
 
 
@@ -142,6 +143,7 @@ def test_get_all_modules(backend):
     response = backend.get_modules("http://localhost/")
 
     assert json.loads(response) == details
+
 
 def test_get_all_namespace1_modules(backend):
     details = {

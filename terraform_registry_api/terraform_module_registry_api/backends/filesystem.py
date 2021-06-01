@@ -102,7 +102,7 @@ class Filesystem(AbstractBackend):
                 provider=provider, version=latest_version,
                 base_url=baseurl+"v1/modules")
             return url
-        raise ModuleNotFoundException("Module Not Found")        
+        raise ModuleNotFoundException("Module Not Found")
 
     def get_modules(self, baseurl, namespace=None):
         """Get all modules in namespace provided.
@@ -116,9 +116,9 @@ class Filesystem(AbstractBackend):
         if namespace is None:
             namespaces = [basename(f.path) for f in scandir(self.basedir) if f.is_dir()]
         elif not exists(join(self.basedir, namespace)):
-            namespaces=[]
+            namespaces = []
         else:
-            namespaces= [namespace]
+            namespaces = [namespace]
         modules = self.get_all_modules(namespaces)
         details = {
             'meta': {
@@ -138,9 +138,10 @@ class Filesystem(AbstractBackend):
         Returns:
             json: List of modules including details
         """
-        all_modules = self.get_all_modules(basename(f.path) for f in scandir(self.basedir) if f.is_dir())
+        all_modules = self.get_all_modules(basename(f.path)
+                                           for f in scandir(self.basedir) if f.is_dir())
         modules = [module for module in all_modules if query.lstrip('/') in module]
-        results={
+        results = {
             "meta": {
                 "limit": 0,
                 "current_offset": 0,
@@ -173,7 +174,6 @@ class Filesystem(AbstractBackend):
             "modules": self.get_module_details(baseurl, providers)
         })
 
-
     def get_module(self, baseurl, namespace, name, provider, version=None):
         """Get module with extended details.
 
@@ -201,7 +201,6 @@ class Filesystem(AbstractBackend):
                                                         version))
         else:
             raise ModuleNotFoundException("Module Not Found")
-
 
     def get_extended_details(self, baseurl, namespace, name, provider, version):
         """Get Module with fully extended details.
@@ -254,7 +253,6 @@ class Filesystem(AbstractBackend):
             "providers": [basename(f.path) for f in scandir(mod_dir) if f.is_dir()],
             "versions": [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
         }
-
 
     def get_module_details(self, baseurl, modules):
         """Get extended details for the modules in the list.
