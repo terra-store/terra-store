@@ -1,16 +1,34 @@
 import json
+import yaml
 import pytest
 import shutil
 import os
+
+from os.path import join, exists
 
 from terraform_registry_api.terraform_module_registry_api.backends \
     import Filesystem
 from terraform_registry_api.terraform_module_registry_api.exceptions \
     import ModuleNotFoundException
 
+def generate_metadata(basedir, namespace, name):
+    filename = join(basedir, namespace, name, "module_metadata.yaml")
+    if not exists(filename):
+        with open(filename, mode="wt") as modulefile:
+            data = {
+                "namespace": namespace,
+                "name": name,
+                "owner": "A. Person",
+                "description": "A Module"
+            }
+            yaml.dump(data, modulefile)
+
+
 
 @pytest.fixture
 def backend():
+    os.makedirs("./tests/backend/modules/namespace1/sample1/gcp/1.0.0/", exist_ok=True)
+    os.mknod("./tests/backend/modules/namespace1/sample1/gcp/1.0.0/namespace1_sample1-gcp-1.0.0.tar.gz")
     os.makedirs("./tests/backend/modules/namespace1/sample1/aws/1.0.0/", exist_ok=True)
     os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.0.0/namespace1_sample1-aws-1.0.0.tar.gz")
     os.makedirs("./tests/backend/modules/namespace1/sample1/aws/1.1.0/", exist_ok=True)
@@ -21,6 +39,8 @@ def backend():
     os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.0.0/namespace1_sample2-aws-1.0.0.tar.gz")
     os.makedirs("./tests/backend/modules/namespace1/sample2/aws/2.0.0/", exist_ok=True)
     os.mknod("./tests/backend/modules/namespace1/sample1/aws/1.0.0/namespace1_sample2-aws-2.0.0.tar.gz")
+    generate_metadata("./tests/backend/modules/", "namespace1", "sample1")
+    generate_metadata("./tests/backend/modules/", "namespace1", "sample2")
     yield Filesystem("./tests/backend/modules")
     shutil.rmtree("./tests/backend/modules")
 
@@ -62,13 +82,13 @@ def test_get_versions_invalid(backend):
 
 
 def test_download_latest_modulefound(backend):
-    response = backend.download_latest('terra','test','aws')
-    assert response == "namespace1/sample1/aws/2.0.0/download"
+    response = backend.download_latest('http://localhost/', 'namespace1','sample1','aws')
+    assert response == "http://localhost/v1/modules/namespace1/sample1/aws/2.0.0/download"
 
 
 def test_download_latest_modulenotfound(backend):
     with pytest.raises(ModuleNotFoundException):
-        backend.download_latest('/v1/modules/namespace1/sample1/aws2/download')
+        backend.download_latest('http://localhost/', 'namespace1', 'sample1', 'aws2')
 
 
 def test_get_all_modules(backend):
@@ -80,76 +100,35 @@ def test_get_all_modules(backend):
         'modules': [
             {
                 'id': '/namespace1/sample1/aws/2.0.0',
-                'owner': 'noone',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
                 'name': 'test',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
             },
             {
-                'id': '/namespace1/k8s/aws/2.0.0',
-                'owner': 'noone',
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'k8s',
+                'name': 'sample2',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/k8s/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
             }
         ]
     }
-    response = backend.get_modules()
+    response = backend.get_modules("http://localhost/")
 
     assert json.loads(response) == details
-
-
-def test_get_all_modules_limit2(backend):
-    details = {
-        'meta': {
-            'limit': 0,
-            'current_offset': 0,
-        },
-        'modules': [
-            {
-                'id': '/namespace1/sample1/aws/2.0.0',
-                'owner': 'noone',
-                'namespace': 'namespace1',
-                'name': 'test',
-                'version': '2.0.0',
-                'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
-                'published_at': '2021-10-17T01:22:17.792066Z',
-                'downloads': 213,
-                'verified': True
-            },
-            {
-                'id': '/namespace1/k8s/aws/2.0.0',
-                'owner': 'noone',
-                'namespace': 'namespace1',
-                'name': 'k8s',
-                'version': '2.0.0',
-                'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/k8s/aws/2.0.0',
-                'published_at': '2021-10-17T01:22:17.792066Z',
-                'downloads': 213,
-                'verified': True
-            }
-        ]
-    }
-    response = backend.get_modules()
-
-    assert json.loads(response) == details
-
 
 def test_get_all_namespace1_modules(backend):
     details = {
@@ -160,33 +139,33 @@ def test_get_all_namespace1_modules(backend):
         'modules': [
             {
                 'id': '/namespace1/sample1/aws/2.0.0',
-                'owner': 'noone',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
                 'name': 'test',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
             },
             {
-                'id': '/namespace1/k8s/aws/2.0.0',
-                'owner': 'noone',
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'k8s',
+                'name': 'sample2',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/k8s/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
             }
         ]
     }
-    response = backend.get_modules("namespace1")
+    response = backend.get_modules("http://localhost/", "namespace1")
 
     assert json.loads(response) == details
 
@@ -199,13 +178,13 @@ def test_get_none_namespace2_modules(backend):
         },
         'modules': []
     }
-    response = backend.get_modules("namespace2")
+    response = backend.get_modules("http://localhost/", "namespace2")
 
     assert json.loads(response) == details
 
 
 def test_search_module_1result(backend):
-    response = backend.search_modules("namespace1/sample1/aws")
+    response = backend.search_modules("http://localhost/", "namespace1/sample1/aws")
     expected = {
         "meta": {
             "limit": 0,
@@ -214,13 +193,13 @@ def test_search_module_1result(backend):
         "modules": [
             {
                 'id': '/namespace1/sample1/aws/2.0.0',
-                'owner': 'noone',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
                 'name': 'test',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -232,7 +211,7 @@ def test_search_module_1result(backend):
 
 
 def test_search_module_0result(backend):
-    response = backend.search_modules("/namespace2/sample1/aws")
+    response = backend.search_modules("http://localhost/", "/namespace2/sample1/aws")
     expected = {
         'meta': {
             'limit': 0,
@@ -244,7 +223,7 @@ def test_search_module_0result(backend):
 
 
 def test_search_module_2result(backend):
-    response = backend.search_modules("/namespace1")
+    response = backend.search_modules("http://localhost/", "/namespace1")
     expected = {
         "meta": {
             "limit": 0,
@@ -253,26 +232,26 @@ def test_search_module_2result(backend):
         "modules": [
             {
                 'id': '/namespace1/sample1/aws/2.0.0',
-                'owner': 'noone',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
                 'name': 'test',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
             },
             {
-                'id': '/namespace1/k8s/aws/2.0.0',
-                'owner': 'noone',
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'k8s',
+                'name': 'sample2',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/k8s/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -283,7 +262,7 @@ def test_search_module_2result(backend):
 
 
 def test_get_latest_for_all_found(backend):
-    response = backend.get_latest_all_providers("namespace1", "sample1")
+    response = backend.get_latest_all_providers("http://localhost/", "namespace1", "sample1")
     expected = {
         "meta": {
             "limit": 0,
@@ -292,13 +271,13 @@ def test_get_latest_for_all_found(backend):
         "modules": [
             {
                 'id': '/namespace1/sample1/aws/2.0.0',
-                'owner': 'noone',
+                'owner': 'A. Person',
                 'namespace': 'namespace1',
                 'name': 'sample1',
                 'version': '2.0.0',
                 'provider': 'aws',
-                'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -310,7 +289,7 @@ def test_get_latest_for_all_found(backend):
 
 
 def test_get_latest_for_all_notfound(backend):
-    response = backend.get_latest_all_providers("namespace2", "sample1")
+    response = backend.get_latest_all_providers("http://localhost/", "namespace2", "sample1")
     expected = {
         'meta': {
             'limit': 0,
@@ -323,16 +302,16 @@ def test_get_latest_for_all_notfound(backend):
 
 
 def test_get_latest_for_provider_found(backend):
-    response = backend.get_module("namespace1", "sample1", "aws")
+    response = backend.get_module("http://localhost/", "namespace1", "sample1", "aws")
     expected = {
         "id": "namespace1/sample1/aws/2.0.0",
-        "owner": "noone",
+        "owner": "A. Person",
         "namespace": "namespace1",
         "name": "sample1",
         "version": "2.0.0",
         "provider": "aws",
-        'description': 'Fake Module.',
-        'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+        'description': 'A Module',
+        'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
         'published_at': '2021-10-17T01:22:17.792066Z',
         'downloads': 213,
         "verified": True,
@@ -351,6 +330,7 @@ def test_get_latest_for_provider_found(backend):
         ],
         "providers": [
             "aws",
+            "gcp"
         ],
         "versions": [
             "1.0.0",
@@ -364,25 +344,25 @@ def test_get_latest_for_provider_found(backend):
 
 def test_get_latest_for_provider_notfound(backend):
     with pytest.raises(ModuleNotFoundException):
-        backend.get_module("namespace2", "sample1", "aws")
+        backend.get_module("http://localhost/", "namespace2", "sample1", "aws")
 
 
 def test_get_module_details_notfound(backend):
     with pytest.raises(ModuleNotFoundException):
-        backend.get_module("namespace2", "sample1", "aws", "2.0.0")
+        backend.get_module("http://localhost/", "namespace2", "sample1", "aws", "2.0.0")
 
 
 def test_get_module_details_found(backend):
-    response = backend.get_module("namespace1", "sample1", "aws", "2.0.0")
+    response = backend.get_module("http://localhost/", "namespace1", "sample1", "aws", "2.0.0")
     expected = {
         "id": "namespace1/sample1/aws/2.0.0",
-        "owner": "noone",
+        "owner": "A. Person",
         "namespace": "namespace1",
         "name": "sample1",
         "version": "2.0.0",
         "provider": "aws",
-        'description': 'Fake Module.',
-        'source': 'http://localhost:5000/storage/namespace1/sample1/aws/2.0.0',
+        'description': 'A Module',
+        'source': 'http://localhost/dl/modules/namespace1/sample1/aws/2.0.0',
         'published_at': '2021-10-17T01:22:17.792066Z',
         'downloads': 213,
         "verified": True,
@@ -401,6 +381,7 @@ def test_get_module_details_found(backend):
         ],
         "providers": [
             "aws",
+            "gcp"
         ],
         "versions": [
             "1.0.0",

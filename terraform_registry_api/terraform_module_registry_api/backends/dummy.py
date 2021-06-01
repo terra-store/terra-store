@@ -87,7 +87,7 @@ class Dummy(AbstractBackend):
                 name=name, version=version, namespace=namespace)
         raise ModuleNotFoundException("Module Not Found: " + module_name)
 
-    def download_latest(self, namespace, name, provider):
+    def download_latest(self, baseurl, namespace, name, provider):
         """Find the latest version of the module.
 
         Find the latest version of the module and return
@@ -109,11 +109,11 @@ class Dummy(AbstractBackend):
         if module_name in self.dummy_data['modules'].keys():
             url = "{base_url}{module_name}/2.0.0/download".format(
                 module_name=module_name,
-                base_url="http://localhost:5000/v1/modules")
+                base_url=baseurl+"v1/modules")
             return url
         raise ModuleNotFoundException("Module Not Found: " + module_name)
 
-    def get_modules(self, namespace=None):
+    def get_modules(self, baseurl, namespace=None):
         """Get all modules in namespace provided.
 
         Args:
@@ -134,11 +134,11 @@ class Dummy(AbstractBackend):
                 'limit': 0,
                 'current_offset': 0,
             },
-            'modules': get_module_details(modules)
+            'modules': get_module_details(baseurl, modules)
         }
         return json.dumps(details)
 
-    def search_modules(self, query):
+    def search_modules(self, baseurl, query):
         """Search the module list based on the query.
 
         Args:
@@ -155,11 +155,11 @@ class Dummy(AbstractBackend):
                 "limit": 0,
                 "current_offset": 0,
             },
-            "modules": get_module_details(modules)
+            "modules": get_module_details(baseurl, modules)
         }
         return json.dumps(response)
 
-    def get_latest_all_providers(self, namespace, name):
+    def get_latest_all_providers(self, baseurl, namespace, name):
         """Get Latest versions for each deployed provider.
 
         Args:
@@ -180,10 +180,10 @@ class Dummy(AbstractBackend):
                 "limit": 0,
                 "current_offset": 0
             },
-            "modules": get_module_details(providers)
+            "modules": get_module_details(baseurl, providers)
         })
 
-    def get_module(self, namespace, name, provider, version=None):
+    def get_module(self, baseurl, namespace, name, provider, version=None):
         """Get module with extended details.
 
         Args:
@@ -204,14 +204,15 @@ class Dummy(AbstractBackend):
             namespace=namespace, name=name, provider=provider)
         if module_name in self.dummy_data['modules'].keys() and \
                 version in self.dummy_data['modules'][module_name]['versions']:
-            return json.dumps(get_extended_details(namespace,
+            return json.dumps(get_extended_details(baseurl,
+                                                   namespace,
                                                    name,
                                                    provider,
                                                    version))
         raise ModuleNotFoundException("Module Not Found: " + module_name)
 
 
-def get_extended_details(namespace, name, provider, version):
+def get_extended_details(baseurl, namespace, name, provider, version):
     """Get Module with fully extended details.
 
     Args:
@@ -234,8 +235,8 @@ def get_extended_details(namespace, name, provider, version):
         'version': version,
         'provider': provider,
         'description': 'Fake Module.',
-        'source': 'http://localhost:5000/storage/{module}'.format(
-            module=module_name),
+        'source': '{baseurl}storage/{module}'.format(
+            baseurl=baseurl, module=module_name),
         'published_at': '2021-10-17T01:22:17.792066Z',
         'downloads': 213,
         'verified': True,
@@ -263,7 +264,7 @@ def get_extended_details(namespace, name, provider, version):
     }
 
 
-def get_module_details(modules):
+def get_module_details(baseurl, modules):
     """Get extended details for the modules in the list.
 
     Args:
@@ -283,8 +284,8 @@ def get_module_details(modules):
             'version': '2.0.0',
             'provider': data[3],
             'description': 'Fake Module.',
-            'source': 'http://localhost:5000/storage{module}/2.0.0'.format(
-                module=mod),
+            'source': '{baseurl}storage{module}/2.0.0'.format(
+                baseurl=baseurl, module=mod),
             'published_at': '2021-10-17T01:22:17.792066Z',
             'downloads': 213,
             'verified': True

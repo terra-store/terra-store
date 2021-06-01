@@ -53,7 +53,7 @@ def list_modules(namespace=None):
     Returns:
         response: JSON formatted respnse
     """
-    return make_response(backend.get_modules(namespace), 200)
+    return make_response(backend.get_modules(request.url_root, namespace), 200)
 
 
 def list_all_modules():
@@ -121,7 +121,8 @@ def search_modules(q):
         response: list of modules matching the
                   relevant search query as json
     """
-    return make_response(backend.search_modules(q), 200)
+    return make_response(backend.search_modules(
+        request.url_root, q), 200)
 
 
 def get_latest_for_all_providers(namespace, name):
@@ -134,7 +135,7 @@ def get_latest_for_all_providers(namespace, name):
     Returns:
         json: Details of vesion for each provider
     """
-    return make_response(backend.get_latest_all_providers(namespace, name),
+    return make_response(backend.get_latest_all_providers(request.url_root, namespace, name),
                          200)
 
 
@@ -151,7 +152,7 @@ def get_latest_for_provider(namespace, name, provider):
     """
     try:
         return make_response(backend.get_module(
-            namespace, name, provider), 200)
+            request.url_root, namespace, name, provider), 200)
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
 
@@ -169,8 +170,10 @@ def get_module(namespace, name, provider, version):
         response: JSON formatted respnse
     """
     try:
-        return make_response(backend.get_module(
-            namespace, name, provider, version), 200)
+        return make_response(
+            backend.get_module(
+                request.url_root, namespace, name, provider, version),
+            200)
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
 
@@ -192,6 +195,6 @@ def download_latest(namespace, name, provider):
     """
     try:
         return redirect(backend.download_latest(
-            namespace, name, provider))
+            request.url_root, namespace, name, provider))
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)

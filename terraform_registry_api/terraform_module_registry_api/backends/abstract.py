@@ -38,7 +38,7 @@ class AbstractBackend(ABC):
         """
 
     @abstractmethod
-    def download_latest(self, namespace, name, provider):
+    def download_latest(self, baseurl, namespace, name, provider):
         """Find the latest version of the module.
 
         Find the latest version of the module and return
@@ -57,7 +57,7 @@ class AbstractBackend(ABC):
         """
 
     @abstractmethod
-    def get_modules(self, namespace=None):
+    def get_modules(self, baseurl, namespace=None):
         """Get all modules in namespace provided.
 
         Args:
@@ -68,7 +68,7 @@ class AbstractBackend(ABC):
         """
 
     @abstractmethod
-    def search_modules(self, query):
+    def search_modules(self, baseurl, query):
         """Search the module list based on the query.
 
         Args:
@@ -79,7 +79,7 @@ class AbstractBackend(ABC):
         """
 
     @abstractmethod
-    def get_latest_all_providers(self, namespace, name):
+    def get_latest_all_providers(self, baseurl, namespace, name):
         """Get Latest versions for each deployed provider.
 
         Args:
@@ -92,7 +92,7 @@ class AbstractBackend(ABC):
         """
 
     @abstractmethod
-    def get_module(self, namespace, name, provider, version=None):
+    def get_module(self, baseurl, namespace, name, provider, version=None):
         """Get module with extended details.
 
         Args:

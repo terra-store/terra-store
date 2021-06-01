@@ -1,5 +1,9 @@
-from os.path import join, exists
+import json
+import yaml
 
+from distutils.version import StrictVersion
+from os.path import join, exists, basename
+from os import scandir
 from .abstract import AbstractBackend
 
 from terraform_registry_api.terraform_module_registry_api.exceptions \
@@ -27,7 +31,20 @@ class Filesystem(AbstractBackend):
         Returns:
             json: JSON object containing the versions of the module on the server
         """
-        pass
+        provider_dir = join(self.basedir, namespace, name, provider)
+        if exists(provider_dir):
+            versions = [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
+            response = {
+                "modules": [
+                    {
+                        "versions": [{"version": ver} for ver in versions]
+                    }
+                ]
+
+            }
+            return json.dumps(response)
+        else:
+            raise ModuleNotFoundException("Module Not Found")
 
     def download_version(self, namespace, name, provider, version):
         """Generate Download URL for module version.
@@ -53,8 +70,14 @@ class Filesystem(AbstractBackend):
         else:
             raise ModuleNotFoundException("Module Not Found")
 
+    def determine_latest(self, namespace, name, provider):
+        provider_dir = join(self.basedir, namespace, name, provider)
+        versions = [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
+        versions.sort(key=StrictVersion)
+        versions.reverse()
+        return versions[0]
 
-    def download_latest(self, namespace, name, provider):
+    def download_latest(self, baseurl, namespace, name, provider):
         """Find the latest version of the module.
 
         Find the latest version of the module and return
@@ -71,9 +94,17 @@ class Filesystem(AbstractBackend):
         Returns:
             str: URL for downloading module
         """
-        pass
+        provider_dir = join(self.basedir, namespace, name, provider)
+        if exists(provider_dir):
+            latest_version = self.determine_latest(namespace, name, provider)
+            url = "{base_url}/{namespace}/{name}/{provider}/{version}/download".format(
+                namespace=namespace, name=name,
+                provider=provider, version=latest_version,
+                base_url=baseurl+"v1/modules")
+            return url
+        raise ModuleNotFoundException("Module Not Found")
 
-    def get_modules(self, namespace=None):
+    def get_modules(self, baseurl, namespace=None):
         """Get all modules in namespace provided.
 
         Args:
@@ -84,7 +115,7 @@ class Filesystem(AbstractBackend):
         """
         pass
 
-    def search_modules(self, query):
+    def search_modules(self, baseurl, query):
         """Search the module list based on the query.
 
         Args:
@@ -95,7 +126,7 @@ class Filesystem(AbstractBackend):
         """
         pass
 
-    def get_latest_all_providers(self, namespace, name):
+    def get_latest_all_providers(self, baseurl, namespace, name):
         """Get Latest versions for each deployed provider.
 
         Args:
@@ -106,9 +137,11 @@ class Filesystem(AbstractBackend):
             json: List of all provders and latest version for
             defined namespace and name
         """
-        pass
+        module_dir = join(self.basedir, namespace, name)
+        if exists(module_dir):
+            pass
 
-    def get_module(self, namespace, name, provider, version=None):
+    def get_module(self, baseurl, namespace, name, provider, version=None):
         """Get module with extended details.
 
         Args:
@@ -123,4 +156,105 @@ class Filesystem(AbstractBackend):
         Returns:
             dict: Module details with all extended attributes
         """
-        pass
+        provider_dir = join(self.basedir, namespace, name, provider)
+        if exists(provider_dir):
+            if version is None:
+                version = self.determine_latest(namespace, name, provider)
+
+            return json.dumps(self.get_extended_details(baseurl,
+                                                        namespace,
+                                                        name,
+                                                        provider,
+                                                        version))
+        else:
+            raise ModuleNotFoundException("Module Not Found")
+
+
+    def get_extended_details(self, baseurl, namespace, name, provider, version):
+        """Get Module with fully extended details.
+
+        Args:
+            namespace (str): namespace for the version
+            name (str): Name of the module
+            provider (str): Provider for the module
+            version (str): Version for the module
+
+        Returns:
+            dict: dict with all the module extended metadata
+        """
+        module_name = "{namespace}/{name}/{provider}/{version}".format(
+            namespace=namespace, name=name,
+            provider=provider, version=version)
+        provider_dir = join(self.basedir,
+                            namespace,
+                            name,
+                            provider)
+        mod_dir = join(self.basedir, namespace, name)
+        meta = self.load_metadata(namespace, name)
+        print(meta)
+        return {
+            'id': module_name,
+            'owner': meta['owner'],
+            'namespace': namespace,
+            'name': name,
+            'version': version,
+            'provider': provider,
+            'description': meta['description'],
+            'source': '{baseurl}dl/modules/{module}'.format(
+                baseurl=baseurl, module=module_name),
+            'published_at': '2021-10-17T01:22:17.792066Z',
+            'downloads': 213,
+            'verified': True,
+            "root": {
+                "path": "",
+                "readme": "# Title",
+                "empty": False,
+                "inputs": [
+                ],
+                "outputs": [
+                ],
+                "dependencies": [],
+                "resources": []
+            },
+            "submodules": [
+            ],
+            "providers": [basename(f.path) for f in scandir(mod_dir) if f.is_dir()],
+            "versions": [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
+        }
+
+
+    def get_module_details(self, baseurl, modules):
+        """Get extended details for the modules in the list.
+
+        Args:
+            modules (list): [description]
+
+        Returns:
+            list: List of modules including details
+        """
+        module_details = []
+        for mod in modules:
+            data = mod.split("/")
+            meta = self.load_metadata(data[1], data[2])
+            print(meta)
+            details = {
+                'id': '{module}/2.0.0'.format(module=mod),
+                'owner': meta['owner'],
+                'namespace': data[1],
+                'name': data[2],
+                'version': self.determine_latest(data[1], data[2], data[3]),
+                'provider': data[3],
+                'description': meta['description'],
+                'source': '{baseurl}dl/modules/{module}/2.0.0'.format(
+                    baseurl=baseurl, module=mod),
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
+            }
+            module_details.append(details)
+
+    def load_metadata(self, namespace, name):
+        metafile = join(self.basedir, namespace, name, "module_metadata.yaml")
+        if exists(metafile):
+            with open(metafile) as metayaml:
+                return yaml.safe_load(metayaml)
