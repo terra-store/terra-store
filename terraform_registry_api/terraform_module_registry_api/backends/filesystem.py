@@ -2,7 +2,7 @@ import json
 import yaml
 
 from distutils.version import StrictVersion
-from os.path import join, exists, basename
+from os.path import join, exists, basename, relpath
 from os import scandir
 from .abstract import AbstractBackend
 
@@ -139,7 +139,17 @@ class Filesystem(AbstractBackend):
         """
         module_dir = join(self.basedir, namespace, name)
         if exists(module_dir):
-            pass
+            providers = [relpath(f.path, self.basedir) for f in scandir(module_dir) if f.is_dir()]
+        else:
+            providers = []
+        return json.dumps({
+            "meta": {
+                "limit": 0,
+                "current_offset": 0
+            },
+            "modules": self.get_module_details(baseurl, providers)
+        })
+
 
     def get_module(self, baseurl, namespace, name, provider, version=None):
         """Get module with extended details.
@@ -235,23 +245,25 @@ class Filesystem(AbstractBackend):
         module_details = []
         for mod in modules:
             data = mod.split("/")
-            meta = self.load_metadata(data[1], data[2])
-            print(meta)
+            version = self.determine_latest(data[0], data[1], data[2])
+            meta = self.load_metadata(data[0], data[1])
             details = {
-                'id': '{module}/2.0.0'.format(module=mod),
+                'id': '/{module}/{version}'.format(
+                    module=mod, version=version),
                 'owner': meta['owner'],
-                'namespace': data[1],
-                'name': data[2],
-                'version': self.determine_latest(data[1], data[2], data[3]),
-                'provider': data[3],
+                'namespace': data[0],
+                'name': data[1],
+                'version': version,
+                'provider': data[2],
                 'description': meta['description'],
-                'source': '{baseurl}dl/modules/{module}/2.0.0'.format(
-                    baseurl=baseurl, module=mod),
+                'source': '{baseurl}dl/modules/{module}/{version}'.format(
+                    baseurl=baseurl, module=mod, version=version),
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
             }
             module_details.append(details)
+        return module_details
 
     def load_metadata(self, namespace, name):
         metafile = join(self.basedir, namespace, name, "module_metadata.yaml")

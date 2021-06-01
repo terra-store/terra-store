@@ -281,6 +281,19 @@ def test_get_latest_for_all_found(backend):
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
+            },
+            {
+                'id': '/namespace1/sample1/gcp/1.0.0',
+                'owner': 'A. Person',
+                'namespace': 'namespace1',
+                'name': 'sample1',
+                'version': '1.0.0',
+                'provider': 'gcp',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/gcp/1.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
             }
         ]
     }
