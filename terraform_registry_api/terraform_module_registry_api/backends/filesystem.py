@@ -102,7 +102,7 @@ class Filesystem(AbstractBackend):
                 provider=provider, version=latest_version,
                 base_url=baseurl+"v1/modules")
             return url
-        raise ModuleNotFoundException("Module Not Found")
+        raise ModuleNotFoundException("Module Not Found")        
 
     def get_modules(self, baseurl, namespace=None):
         """Get all modules in namespace provided.
@@ -113,7 +113,21 @@ class Filesystem(AbstractBackend):
         Returns:
             json: JSON representation of the modules within the namespace
         """
-        pass
+        if namespace is None:
+            namespaces = [basename(f.path) for f in scandir(self.basedir) if f.is_dir()]
+        elif not exists(join(self.basedir, namespace)):
+            namespaces=[]
+        else:
+            namespaces= [namespace]
+        modules = self.get_all_modules(namespaces)
+        details = {
+            'meta': {
+                'limit': 0,
+                'current_offset': 0,
+            },
+            'modules': self.get_module_details(baseurl, modules)
+        }
+        return json.dumps(details)
 
     def search_modules(self, baseurl, query):
         """Search the module list based on the query.
@@ -124,7 +138,16 @@ class Filesystem(AbstractBackend):
         Returns:
             json: List of modules including details
         """
-        pass
+        all_modules = self.get_all_modules(basename(f.path) for f in scandir(self.basedir) if f.is_dir())
+        modules = [module for module in all_modules if query.lstrip('/') in module]
+        results={
+            "meta": {
+                "limit": 0,
+                "current_offset": 0,
+            },
+            "modules": self.get_module_details(baseurl, modules)
+        }
+        return json.dumps(results)
 
     def get_latest_all_providers(self, baseurl, namespace, name):
         """Get Latest versions for each deployed provider.
@@ -270,3 +293,12 @@ class Filesystem(AbstractBackend):
         if exists(metafile):
             with open(metafile) as metayaml:
                 return yaml.safe_load(metayaml)
+
+    def get_all_modules(self, namespaces):
+        modules = []
+        for namespace in namespaces:
+            nsdir = join(self.basedir, namespace)
+            for name in [basename(f.path) for f in scandir(nsdir) if f.is_dir()]:
+                ndir = join(nsdir, name)
+                modules.extend([relpath(f.path, self.basedir) for f in scandir(ndir) if f.is_dir()])
+        return modules

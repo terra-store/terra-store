@@ -99,10 +99,23 @@ def test_get_all_modules(backend):
         },
         'modules': [
             {
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
+                'namespace': 'namespace1',
+                'name': 'sample2',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
+            },
+            {
                 'id': '/namespace1/sample1/aws/2.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'test',
+                'name': 'sample1',
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'A Module',
@@ -112,14 +125,14 @@ def test_get_all_modules(backend):
                 'verified': True
             },
             {
-                'id': '/namespace1/sample2/aws/2.0.0',
+                'id': '/namespace1/sample1/gcp/1.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'sample2',
-                'version': '2.0.0',
-                'provider': 'aws',
+                'name': 'sample1',
+                'version': '1.0.0',
+                'provider': 'gcp',
                 'description': 'A Module',
-                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/gcp/1.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -138,10 +151,23 @@ def test_get_all_namespace1_modules(backend):
         },
         'modules': [
             {
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
+                'namespace': 'namespace1',
+                'name': 'sample2',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
+            },
+            {
                 'id': '/namespace1/sample1/aws/2.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'test',
+                'name': 'sample1',
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'A Module',
@@ -151,14 +177,14 @@ def test_get_all_namespace1_modules(backend):
                 'verified': True
             },
             {
-                'id': '/namespace1/sample2/aws/2.0.0',
+                'id': '/namespace1/sample1/gcp/1.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'sample2',
-                'version': '2.0.0',
-                'provider': 'aws',
+                'name': 'sample1',
+                'version': '1.0.0',
+                'provider': 'gcp',
                 'description': 'A Module',
-                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/gcp/1.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -195,7 +221,7 @@ def test_search_module_1result(backend):
                 'id': '/namespace1/sample1/aws/2.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'test',
+                'name': 'sample1',
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'A Module',
@@ -223,7 +249,7 @@ def test_search_module_0result(backend):
 
 
 def test_search_module_2result(backend):
-    response = backend.search_modules("http://localhost/", "/namespace1")
+    response = backend.search_modules("http://localhost/", "/namespace1/sample1")
     expected = {
         "meta": {
             "limit": 0,
@@ -234,7 +260,7 @@ def test_search_module_2result(backend):
                 'id': '/namespace1/sample1/aws/2.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'test',
+                'name': 'sample1',
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'A Module',
@@ -244,14 +270,14 @@ def test_search_module_2result(backend):
                 'verified': True
             },
             {
-                'id': '/namespace1/sample2/aws/2.0.0',
+                'id': '/namespace1/sample1/gcp/1.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
-                'name': 'sample2',
-                'version': '2.0.0',
-                'provider': 'aws',
+                'name': 'sample1',
+                'version': '1.0.0',
+                'provider': 'gcp',
                 'description': 'A Module',
-                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
+                'source': 'http://localhost/dl/modules/namespace1/sample1/gcp/1.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
