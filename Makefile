@@ -10,7 +10,7 @@ clean: ## Clean up build artifacts
 
 lint: ## Lint the project
 	flake8
-	pydocstyle --match-dir=terraform.*
+	cd terraform_registry_api; pydocstyle; cd -
  
 test: build ## Run all test packages
 	pip install -r test-requirements.txt
