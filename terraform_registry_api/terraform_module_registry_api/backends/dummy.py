@@ -110,7 +110,7 @@ class Dummy(AbstractBackend):
         if module_name in self.dummy_data['modules'].keys():
             url = "{base_url}{module_name}/2.0.0/download".format(
                 module_name=module_name,
-                base_url=baseurl+"v1/modules")
+                base_url=baseurl + "v1/modules")
             return url
         raise ModuleNotFoundException("Module Not Found: " + module_name)
 
@@ -225,7 +225,7 @@ class Dummy(AbstractBackend):
             File: The bytearray representation of the requested file
         """
         print(dirname(dirname(filepath)))
-        if "/"+dirname(dirname(filepath)) in self.dummy_data['modules'].keys():
+        if "/" + dirname(dirname(filepath)) in self.dummy_data['modules'].keys():
             filename = join("/", "tmp", basename(filepath))
             # open file in write mode
             file_obj = tarfile.open(name=filename, mode="w|gz")

@@ -36,9 +36,9 @@ def create_app():
         }
         return json.dumps(services)
 
-    @app.route("/dl/<type>/<path:filepath>")
-    def download_files(type, filepath):
-        if type == "module":
+    @app.route("/dl/<modtype>/<path:filepath>")
+    def download(modtype, filepath):
+        if modtype == "module":
             try:
                 requested = api.download_module(filepath)
             except FileNotFoundException:
@@ -46,7 +46,7 @@ def create_app():
                     status=404,
                     title="File Not Found",
                     detail="The requested file was not found on the server.")
-        elif type == "provider":
+        elif modtype == "provider":
             raise NonConformingResponse(
                 reason="Not Yet Supported",
                 message="The provider type is not yet supported")
