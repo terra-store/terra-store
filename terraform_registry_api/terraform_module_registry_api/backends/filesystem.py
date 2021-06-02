@@ -69,10 +69,11 @@ class Filesystem(AbstractBackend):
             str: Download url of the module itself
         """
         if exists(join(self.basedir, namespace, name, provider, version)):
-            filename = "{namespace}_{name}-{provider}-{version}.tar.gz".format(namespace=namespace,
-                                                                               name=name,
-                                                                               provider=provider,
-                                                                               version=version)
+            filename = "{namespace}_{name}-{provider}-{version}.tar.gz".format(
+                namespace=namespace,
+                name=name,
+                provider=provider,
+                version=version)
             return join(namespace, name, provider, version, filename)
         else:
             raise ModuleNotFoundException("Module Not Found")
@@ -117,7 +118,7 @@ class Filesystem(AbstractBackend):
             url = "{base_url}/{namespace}/{name}/{provider}/{version}/download".format(
                 namespace=namespace, name=name,
                 provider=provider, version=latest_version,
-                base_url=baseurl+"v1/modules")
+                base_url=baseurl + "v1/modules")
             return url
         raise ModuleNotFoundException("Module Not Found")
 
@@ -180,7 +181,8 @@ class Filesystem(AbstractBackend):
         """
         module_dir = join(self.basedir, namespace, name)
         if exists(module_dir):
-            providers = [relpath(f.path, self.basedir) for f in scandir(module_dir) if f.is_dir()]
+            providers = [relpath(f.path, self.basedir)
+                         for f in scandir(module_dir) if f.is_dir()]
         else:
             providers = []
         return json.dumps({
@@ -348,5 +350,6 @@ class Filesystem(AbstractBackend):
             nsdir = join(self.basedir, namespace)
             for name in [basename(f.path) for f in scandir(nsdir) if f.is_dir()]:
                 ndir = join(nsdir, name)
-                modules.extend([relpath(f.path, self.basedir) for f in scandir(ndir) if f.is_dir()])
+                modules.extend(
+                    [relpath(f.path, self.basedir) for f in scandir(ndir) if f.is_dir()])
         return modules

@@ -42,14 +42,17 @@ def create_app():
             try:
                 requested = api.download_module(filepath)
             except FileNotFoundException:
-                raise ResolverProblem(status=404,
-                                      title="File Not Found",
-                                      detail="The requested file was not found on the server.")
+                raise ResolverProblem(
+                    status=404,
+                    title="File Not Found",
+                    detail="The requested file was not found on the server.")
         elif type == "provider":
-            raise NonConformingResponse(reason="Not Yet Supported",
-                                        message="The provider type is not yet supported")
+            raise NonConformingResponse(
+                reason="Not Yet Supported",
+                message="The provider type is not yet supported")
         else:
-            raise BadRequestProblem(detail="Type is not valid: Valid Types are [module|provider]")
+            raise BadRequestProblem(
+                detail="Type is not valid: Valid Types are [module|provider]")
         return send_file(requested)
 
     return app

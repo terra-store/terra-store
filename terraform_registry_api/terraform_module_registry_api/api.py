@@ -135,8 +135,9 @@ def get_latest_for_all_providers(namespace, name):
     Returns:
         json: Details of vesion for each provider
     """
-    return make_response(backend.get_latest_all_providers(request.url_root, namespace, name),
-                         200)
+    return make_response(
+        backend.get_latest_all_providers(request.url_root, namespace, name),
+        200)
 
 
 def get_latest_for_provider(namespace, name, provider):
