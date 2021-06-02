@@ -1,9 +1,10 @@
 import json
+import tarfile
+
+from os.path import dirname, basename, join
 
 from .abstract import AbstractBackend
-
-from terraform_registry_api.terraform_module_registry_api.exceptions \
-    import ModuleNotFoundException
+from ..exceptions import ModuleNotFoundException, FileNotFoundException
 
 
 class Dummy(AbstractBackend):
@@ -210,6 +211,34 @@ class Dummy(AbstractBackend):
                                                    provider,
                                                    version))
         raise ModuleNotFoundException("Module Not Found: " + module_name)
+
+    def download_module(self, filepath):
+        """Download the module requested.
+
+        Args:
+            filepath (str): Path to the file requested
+
+        Raises:
+            FileNotFoundException: Raised if file does not exist
+
+        Returns:
+            File: The bytearray representation of the requested file
+        """
+        print(dirname(dirname(filepath)))
+        if "/"+dirname(dirname(filepath)) in self.dummy_data['modules'].keys():
+            filename = join("/", "tmp", basename(filepath))
+            # open file in write mode
+            file_obj = tarfile.open(name=filename, mode="w|gz")
+            with open(join("/", "tmp", basename("notsupported.txt")),
+                      mode="wt") as text:
+                text.write("This backend is for testing only.")
+            # Add other files to tar file
+            file_obj.add(join("/", "tmp", basename("notsupported.txt")))
+
+            # close file
+            file_obj.close()
+            return filename
+        raise FileNotFoundException("The requested file was not found in this backend.")
 
 
 def get_extended_details(baseurl, namespace, name, provider, version):

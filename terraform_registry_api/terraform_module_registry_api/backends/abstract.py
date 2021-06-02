@@ -107,3 +107,16 @@ class AbstractBackend(ABC):
         Returns:
             dict: Module details with all extended attributes
         """
+    @abstractmethod
+    def download_module(self, filepath):
+        """Download the module requested.
+
+        Args:
+            filepath (str): Path to the file requested
+
+        Raises:
+            FileNotFoundException: Raised if file does not exist
+
+        Returns:
+            File: The bytearray representation of the requested file
+        """

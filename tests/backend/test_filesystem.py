@@ -9,7 +9,7 @@ from os.path import join, exists
 from terraform_registry_api.terraform_module_registry_api.backends \
     import Filesystem
 from terraform_registry_api.terraform_module_registry_api.exceptions \
-    import ModuleNotFoundException
+    import ModuleNotFoundException, FileNotFoundException
 
 
 def generate_metadata(basedir, namespace, name):
@@ -432,3 +432,15 @@ def test_get_module_details_found(backend):
     }
 
     assert json.loads(response) == expected
+
+
+def test_download_module_found(backend):
+    base = "./tests/backend/modules/"
+    request = 'namespace1/sample1/aws/1.0.0/namespace1_sample1-aws-1.0.0.tar.gz'
+    filename = backend.download_module(request)
+    assert filename == join(base, request)
+
+
+def test_download_module_notfound(backend):
+    with pytest.raises(FileNotFoundException):
+        backend.download_module('/namespace2/sample1/aws/1.0.0/namespace1_sample1-aws-1.0.0.tar.gz')

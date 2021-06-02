@@ -198,3 +198,15 @@ def download_latest(namespace, name, provider):
             request.url_root, namespace, name, provider))
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
+
+
+def download_module(filepath):
+    """Download the module at the requested filepath.
+
+    Args:
+        filepath (str): path to requested file
+
+    Returns:
+        filestream: binary representation of file requested
+    """
+    return backend.download_module(filepath)

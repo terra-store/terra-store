@@ -6,8 +6,7 @@ from os.path import join, exists, basename, relpath
 from os import scandir
 from .abstract import AbstractBackend
 
-from terraform_registry_api.terraform_module_registry_api.exceptions \
-    import ModuleNotFoundException
+from ..exceptions import ModuleNotFoundException, FileNotFoundException
 
 
 class Filesystem(AbstractBackend):
@@ -156,8 +155,8 @@ class Filesystem(AbstractBackend):
         Returns:
             json: List of modules including details
         """
-        all_modules = self.__get_all_modules(basename(f.path)
-                                           for f in scandir(self.basedir) if f.is_dir())
+        all_modules = self.__get_all_modules(
+            basename(f.path) for f in scandir(self.basedir) if f.is_dir())
         modules = [module for module in all_modules if query.lstrip('/') in module]
         results = {
             "meta": {
@@ -213,12 +212,28 @@ class Filesystem(AbstractBackend):
                 version = self.__determine_latest(namespace, name, provider)
 
             return json.dumps(self.__get_extended_details(baseurl,
-                                                        namespace,
-                                                        name,
-                                                        provider,
-                                                        version))
+                                                          namespace,
+                                                          name,
+                                                          provider,
+                                                          version))
         else:
             raise ModuleNotFoundException("Module Not Found")
+
+    def download_module(self, filepath):
+        """Download the module requested.
+
+        Args:
+            filepath (str): Path to the file requested
+
+        Raises:
+            FileNotFoundException: Raised if file does not exist
+
+        Returns:
+            File: The bytearray representation of the requested file
+        """
+        if exists(join(self.basedir, filepath)):
+            return join(self.basedir, filepath)
+        raise FileNotFoundException("The requested file was not found in this backend.")
 
     def __get_extended_details(self, baseurl, namespace, name, provider, version):
         """Get Module with fully extended details.
