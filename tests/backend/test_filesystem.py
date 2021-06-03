@@ -141,8 +141,8 @@ def test_get_all_modules(backend):
         ]
     }
     response = backend.get_modules("http://localhost/")
-
-    assert json.loads(response) == details
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(details, sort_keys = True)
 
 
 def test_get_all_namespace1_modules(backend):
@@ -194,8 +194,8 @@ def test_get_all_namespace1_modules(backend):
         ]
     }
     response = backend.get_modules("http://localhost/", "namespace1")
-
-    assert json.loads(response) == details
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert  sorted == json.dumps(details, sort_keys = True)
 
 
 def test_get_none_namespace2_modules(backend):
@@ -208,7 +208,8 @@ def test_get_none_namespace2_modules(backend):
     }
     response = backend.get_modules("http://localhost/", "namespace2")
 
-    assert json.loads(response) == details
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(details, sort_keys = True)
 
 
 def test_search_module_1result(backend):
@@ -235,7 +236,8 @@ def test_search_module_1result(backend):
         ]
     }
 
-    assert json.loads(response) == expected
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(expected, sort_keys = True)
 
 
 def test_search_module_0result(backend):
@@ -247,7 +249,8 @@ def test_search_module_0result(backend):
         },
         'modules': []
     }
-    assert json.loads(response) == expected
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(expected, sort_keys = True)
 
 
 def test_search_module_2result(backend):
@@ -286,7 +289,8 @@ def test_search_module_2result(backend):
             }
         ]
     }
-    assert json.loads(response) == expected
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(expected, sort_keys = True)
 
 
 def test_get_latest_for_all_found(backend):
@@ -326,7 +330,8 @@ def test_get_latest_for_all_found(backend):
         ]
     }
 
-    assert json.loads(response) == expected
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(expected, sort_keys = True)
 
 
 def test_get_latest_for_all_notfound(backend):
@@ -339,7 +344,8 @@ def test_get_latest_for_all_notfound(backend):
         'modules': []
     }
 
-    assert json.loads(response) == expected
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(expected, sort_keys = True)
 
 
 def test_get_latest_for_provider_found(backend):
@@ -380,7 +386,8 @@ def test_get_latest_for_provider_found(backend):
         ]
     }
 
-    assert json.loads(response) == expected
+    sorted = json.dumps(json.loads(response), sort_keys = True)
+    assert sorted == json.dumps(expected, sort_keys = True)
 
 
 def test_get_latest_for_provider_notfound(backend):
@@ -431,7 +438,7 @@ def test_get_module_details_found(backend):
         ]
     }
 
-    assert json.loads(response) == expected
+    assert json.dumps(json.loads(response), sort_keys=True) == json.dumps(expected, sort_keys = True)
 
 
 def test_download_module_found(backend):
