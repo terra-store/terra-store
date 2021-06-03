@@ -160,7 +160,6 @@ class Filesystem(AbstractBackend):
         namespaces = [basename(f.path) for f in scandir(self.basedir) if f.is_dir()]
         namespaces.sort()
         all_modules = self.__get_all_modules(namespaces)
-            
         modules = [module for module in all_modules if query.lstrip('/') in module]
         results = {
             "meta": {
