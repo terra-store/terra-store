@@ -186,6 +186,7 @@ class Filesystem(AbstractBackend):
         if exists(module_dir):
             providers = [relpath(f.path, self.basedir)
                          for f in scandir(module_dir) if f.is_dir()]
+            providers.sort()
         else:
             providers = []
         return json.dumps({
