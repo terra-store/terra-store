@@ -6,6 +6,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from connexion.exceptions import NonConformingResponse, BadRequestProblem, \
     ResolverProblem
 from flask.helpers import send_file
+from os import environ
 
 from .terraform_module_registry_api import api
 from .terraform_module_registry_api.exceptions import FileNotFoundException
@@ -22,6 +23,9 @@ def create_app():
     # Create the application instance
     app = connexion.App(__name__, specification_dir="./")
     app.app.wsgi_app = ProxyFix(app.app.wsgi_app)
+
+    if environ.get("fs_path") is not None:
+        api.set_backend("Filesystem")
 
     # Read the swagger.yml file to configure the endpoints
     app.add_api("terraform_module_registry_api/swagger.yml")

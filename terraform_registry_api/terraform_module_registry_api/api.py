@@ -1,6 +1,7 @@
 from flask import make_response, redirect, request
+from os import environ
 
-from .backends import Dummy
+from .backends import Dummy, Filesystem
 from .exceptions import ModuleNotFoundException
 
 backend = Dummy()
@@ -212,3 +213,14 @@ def download_module(filepath):
         filestream: binary representation of file requested
     """
     return backend.download_module(filepath)
+
+
+def set_backend(type):
+    """Set backend.
+
+    Args:
+        type (str): Type of backend requested
+    """
+    if type == "Filesystem":
+        global backend
+        backend = Filesystem(environ.get("fs_path"))
