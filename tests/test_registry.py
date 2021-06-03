@@ -21,7 +21,6 @@ def test_service_discovery_endpoint(client):
     }
     rv = client.get('/.well-known/terraform.json')
     assert rv.status_code == 200
-    print(rv.data)
     assert json.loads(rv.data) == services
 
 

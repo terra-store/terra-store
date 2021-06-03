@@ -224,7 +224,6 @@ class Dummy(AbstractBackend):
         Returns:
             File: The bytearray representation of the requested file
         """
-        print(dirname(dirname(filepath)))
         if "/" + dirname(dirname(filepath)) in self.dummy_data['modules'].keys():
             filename = join("/", "tmp", basename(filepath))
             # open file in write mode

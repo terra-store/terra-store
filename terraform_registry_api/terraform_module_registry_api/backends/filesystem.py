@@ -258,7 +258,10 @@ class Filesystem(AbstractBackend):
                             provider)
         mod_dir = join(self.basedir, namespace, name)
         meta = self.__load_metadata(namespace, name)
-        print(meta)
+        providers = [basename(f.path) for f in scandir(mod_dir) if f.is_dir()]
+        providers.sort()
+        versions = [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
+        versions.sort()
         return {
             'id': module_name,
             'owner': meta['owner'],
@@ -285,8 +288,8 @@ class Filesystem(AbstractBackend):
             },
             "submodules": [
             ],
-            "providers": [basename(f.path) for f in scandir(mod_dir) if f.is_dir()],
-            "versions": [basename(f.path) for f in scandir(provider_dir) if f.is_dir()]
+            "providers": providers,
+            "versions": versions
         }
 
     def __get_module_details(self, baseurl, modules):
