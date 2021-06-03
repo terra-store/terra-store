@@ -9,7 +9,8 @@ clean: ## Clean up build artifacts
 	rm -rf .coverage
 
 lint: ## Lint the project
-	flake8 --exclude=venv,build
+	flake8
+	cd terraform_registry_api; pydocstyle; cd -
  
 test: build ## Run all test packages
 	pip install -r test-requirements.txt
