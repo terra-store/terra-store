@@ -100,19 +100,6 @@ def test_get_all_modules(backend):
         },
         'modules': [
             {
-                'id': '/namespace1/sample2/aws/2.0.0',
-                'owner': 'A. Person',
-                'namespace': 'namespace1',
-                'name': 'sample2',
-                'version': '2.0.0',
-                'provider': 'aws',
-                'description': 'A Module',
-                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
-                'published_at': '2021-10-17T01:22:17.792066Z',
-                'downloads': 213,
-                'verified': True
-            },
-            {
                 'id': '/namespace1/sample1/aws/2.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
@@ -134,6 +121,19 @@ def test_get_all_modules(backend):
                 'provider': 'gcp',
                 'description': 'A Module',
                 'source': 'http://localhost/dl/modules/namespace1/sample1/gcp/1.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
+            },
+            {
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
+                'namespace': 'namespace1',
+                'name': 'sample2',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -153,19 +153,6 @@ def test_get_all_namespace1_modules(backend):
         },
         'modules': [
             {
-                'id': '/namespace1/sample2/aws/2.0.0',
-                'owner': 'A. Person',
-                'namespace': 'namespace1',
-                'name': 'sample2',
-                'version': '2.0.0',
-                'provider': 'aws',
-                'description': 'A Module',
-                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
-                'published_at': '2021-10-17T01:22:17.792066Z',
-                'downloads': 213,
-                'verified': True
-            },
-            {
                 'id': '/namespace1/sample1/aws/2.0.0',
                 'owner': 'A. Person',
                 'namespace': 'namespace1',
@@ -187,6 +174,19 @@ def test_get_all_namespace1_modules(backend):
                 'provider': 'gcp',
                 'description': 'A Module',
                 'source': 'http://localhost/dl/modules/namespace1/sample1/gcp/1.0.0',
+                'published_at': '2021-10-17T01:22:17.792066Z',
+                'downloads': 213,
+                'verified': True
+            },
+            {
+                'id': '/namespace1/sample2/aws/2.0.0',
+                'owner': 'A. Person',
+                'namespace': 'namespace1',
+                'name': 'sample2',
+                'version': '2.0.0',
+                'provider': 'aws',
+                'description': 'A Module',
+                'source': 'http://localhost/dl/modules/namespace1/sample2/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True

@@ -133,6 +133,7 @@ class Filesystem(AbstractBackend):
         """
         if namespace is None:
             namespaces = [basename(f.path) for f in scandir(self.basedir) if f.is_dir()]
+            namespaces.sort()
         elif not exists(join(self.basedir, namespace)):
             namespaces = []
         else:
@@ -156,8 +157,10 @@ class Filesystem(AbstractBackend):
         Returns:
             json: List of modules including details
         """
-        all_modules = self.__get_all_modules(
-            basename(f.path) for f in scandir(self.basedir) if f.is_dir())
+        namespaces = [basename(f.path) for f in scandir(self.basedir) if f.is_dir()]
+        namespaces.sort()
+        all_modules = self.__get_all_modules(namespaces)
+            
         modules = [module for module in all_modules if query.lstrip('/') in module]
         results = {
             "meta": {
@@ -355,4 +358,5 @@ class Filesystem(AbstractBackend):
                 ndir = join(nsdir, name)
                 modules.extend(
                     [relpath(f.path, self.basedir) for f in scandir(ndir) if f.is_dir()])
+        modules.sort()
         return modules
