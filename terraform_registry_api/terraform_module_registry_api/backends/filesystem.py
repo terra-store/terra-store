@@ -341,7 +341,7 @@ class Filesystem(AbstractBackend):
         if exists(metafile):
             with open(metafile) as metayaml:
                 return yaml.safe_load(metayaml)
-        raise FileNotFoundException()
+        raise FileNotFoundException("File was not found.")
 
     def __get_all_modules(self, namespaces):
         """Get all modules within the listed namespaces.
