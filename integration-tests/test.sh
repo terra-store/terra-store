@@ -19,7 +19,7 @@ generate_test_data() {
   mkdir -p $(dirname "$0")/modules/namespace1/sample1/aws/1.1.0
   mkdir -p $(dirname "$0")/modules/namespace1/sample1/aws/2.0.0
   tarname="$(dirname "$0")/modules/namespace1/sample1/aws/1.1.0/namespace1_sample1-aws-1.1.0.tar.gz"
-  tar cvzf $tarname $(dirname "$0")/terraform/*
+  tar cvzf "$tarname" $(dirname "$0")/terraform/*
 }
 generate_test_data
 # build and run the composed services
