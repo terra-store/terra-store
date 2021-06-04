@@ -215,12 +215,12 @@ def download_module(filepath):
     return backend.download_module(filepath)
 
 
-def set_backend(type):
+def set_backend(backendtype):
     """Set backend.
 
     Args:
-        type (str): Type of backend requested
+        backendtype (str): Type of backend requested
     """
-    if type == "Filesystem":
+    if backendtype == "Filesystem":
         global backend
         backend = Filesystem(environ.get("fs_path"))
