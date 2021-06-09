@@ -1,9 +1,7 @@
-from flask import make_response, redirect
+from flask import make_response, redirect, request
 
-from terraform_registry_api.terraform_module_registry_api.backends \
-    import Dummy
-from terraform_registry_api.terraform_module_registry_api.exceptions \
-    import ModuleNotFoundException
+from .backends import Dummy
+from .exceptions import ModuleNotFoundException
 
 backend = Dummy()
 
@@ -55,7 +53,7 @@ def list_modules(namespace=None):
     Returns:
         response: JSON formatted respnse
     """
-    return make_response(backend.get_modules(namespace), 200)
+    return make_response(backend.get_modules(request.url_root, namespace), 200)
 
 
 def list_all_modules():
@@ -100,8 +98,14 @@ def download_version(namespace, name, provider, version):
     """
     try:
         resp = make_response('', 204)
-        resp.headers['X-Terraform-Get'] = backend.download_version(
+        artifact = backend.download_version(
             namespace, name, provider, version)
+        if artifact.startswith("http"):
+            final_artifact = artifact
+        else:
+            final_artifact = "{root}dl/module/{artifact}".format(root=request.url_root,
+                                                                 artifact=artifact)
+        resp.headers['X-Terraform-Get'] = final_artifact
         return resp
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
@@ -117,7 +121,8 @@ def search_modules(q):
         response: list of modules matching the
                   relevant search query as json
     """
-    return make_response(backend.search_modules(q), 200)
+    return make_response(backend.search_modules(
+        request.url_root, q), 200)
 
 
 def get_latest_for_all_providers(namespace, name):
@@ -130,8 +135,9 @@ def get_latest_for_all_providers(namespace, name):
     Returns:
         json: Details of vesion for each provider
     """
-    return make_response(backend.get_latest_all_providers(namespace, name),
-                         200)
+    return make_response(
+        backend.get_latest_all_providers(request.url_root, namespace, name),
+        200)
 
 
 def get_latest_for_provider(namespace, name, provider):
@@ -147,7 +153,7 @@ def get_latest_for_provider(namespace, name, provider):
     """
     try:
         return make_response(backend.get_module(
-            namespace, name, provider), 200)
+            request.url_root, namespace, name, provider), 200)
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
 
@@ -165,8 +171,10 @@ def get_module(namespace, name, provider, version):
         response: JSON formatted respnse
     """
     try:
-        return make_response(backend.get_module(
-            namespace, name, provider, version), 200)
+        return make_response(
+            backend.get_module(
+                request.url_root, namespace, name, provider, version),
+            200)
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
 
@@ -188,6 +196,18 @@ def download_latest(namespace, name, provider):
     """
     try:
         return redirect(backend.download_latest(
-            namespace, name, provider))
+            request.url_root, namespace, name, provider))
     except ModuleNotFoundException as module_not_found:
         return make_response(module_not_found.message, 404)
+
+
+def download_module(filepath):
+    """Download the module at the requested filepath.
+
+    Args:
+        filepath (str): path to requested file
+
+    Returns:
+        filestream: binary representation of file requested
+    """
+    return backend.download_module(filepath)

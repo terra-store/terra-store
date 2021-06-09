@@ -18,6 +18,13 @@ def test_download_module_valid(client):
         "https://api.github.com/repos/terra/aws-test/v2.0.0"
 
 
+def test_download_module_valid_relative(client):
+    rv = client.get('/v1/modules/terra/k8s/aws/2.0.0/download')
+    assert rv.status_code == 204
+    assert rv.headers['X-Terraform-Get'] == \
+        "http://localhost/dl/module/terra/aws-k8s/v2.0.0"
+
+
 def test_download_module_versionnotfound(client):
     rv = client.get('/v1/modules/terra/test/aws/2.1.0/download')
     assert rv.status_code == 404
@@ -58,7 +65,7 @@ def test_download_latest_modulefound(client):
                     follow_redirects=False)
     assert rv.status_code == 302
     assert rv.headers['Location'] == \
-        "http://localhost:5000/v1/modules/terra/test/aws/2.0.0/download"
+        "http://localhost/v1/modules/terra/test/aws/2.0.0/download"
 
 
 def test_download_latest_modulenotfound(client):
@@ -82,7 +89,7 @@ def test_get_all_modules(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/test/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -95,7 +102,7 @@ def test_get_all_modules(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/k8s/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/k8s/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -122,7 +129,7 @@ def test_get_all_modules_limit2(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/test/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -135,7 +142,7 @@ def test_get_all_modules_limit2(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/k8s/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/k8s/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -162,7 +169,7 @@ def test_get_all_terra_modules(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/test/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -175,7 +182,7 @@ def test_get_all_terra_modules(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/k8s/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/k8s/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -216,7 +223,7 @@ def test_search_module_1result(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/test/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -256,7 +263,7 @@ def test_search_module_2result(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/test/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -269,7 +276,7 @@ def test_search_module_2result(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/k8s/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/k8s/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -296,7 +303,7 @@ def test_get_latest_for_all_found(client):
                 'version': '2.0.0',
                 'provider': 'aws',
                 'description': 'Fake Module.',
-                'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+                'source': 'http://localhost/storage/terra/test/aws/2.0.0',
                 'published_at': '2021-10-17T01:22:17.792066Z',
                 'downloads': 213,
                 'verified': True
@@ -330,7 +337,7 @@ def test_get_latest_for_provider_found(client):
         "version": "2.0.0",
         "provider": "aws",
         'description': 'Fake Module.',
-        'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+        'source': 'http://localhost/storage/terra/test/aws/2.0.0',
         'published_at': '2021-10-17T01:22:17.792066Z',
         'downloads': 213,
         "verified": True,
@@ -382,7 +389,7 @@ def test_get_module_details_found(client):
         "version": "2.0.0",
         "provider": "aws",
         'description': 'Fake Module.',
-        'source': 'http://localhost:5000/storage/terra/test/aws/2.0.0',
+        'source': 'http://localhost/storage/terra/test/aws/2.0.0',
         'published_at': '2021-10-17T01:22:17.792066Z',
         'downloads': 213,
         "verified": True,
