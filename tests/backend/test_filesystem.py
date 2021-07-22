@@ -9,7 +9,7 @@ from os.path import join, exists
 from terraform_registry_api.terraform_module_registry_api.backends \
     import Filesystem
 from terraform_registry_api.terraform_module_registry_api.exceptions \
-    import ModuleNotFoundException, FileNotFoundException
+    import DuplicateModuleException, ModuleNotFoundException, FileNotFoundException
 
 
 def generate_metadata(basedir, namespace, name):
@@ -451,3 +451,21 @@ def test_download_module_found(backend):
 def test_download_module_notfound(backend):
     with pytest.raises(FileNotFoundException):
         backend.download_module('/namespace2/sample1/aws/1.0.0/namespace1_sample1-aws-1.0.0.tar.gz')
+
+
+def test_module_upload_valid(backend):
+    expected = {
+        "status": "ok", 
+        "module_details": {
+            "namespace": "namespace1",
+            "name": "newsample",
+            "provider": "aws",
+            "version": "1.0.0"
+        }
+    }
+    resp = backend.upload_version("namespace1", "newsample","aws", "1.0.0", [])
+    assert resp == expected
+
+def test_module_upload_duplicate(backend):
+    with pytest.raises(DuplicateModuleException):
+        backend.upload_version("namespace1", "sample1","aws", "1.0.0", [])

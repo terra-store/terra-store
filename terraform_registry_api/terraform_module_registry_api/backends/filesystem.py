@@ -6,7 +6,8 @@ from os.path import join, exists, basename, relpath
 from os import scandir
 from .abstract import AbstractBackend
 
-from ..exceptions import ModuleNotFoundException, FileNotFoundException
+from ..exceptions import ModuleNotFoundException, \
+    FileNotFoundException, DuplicateModuleException
 
 
 class Filesystem(AbstractBackend):
