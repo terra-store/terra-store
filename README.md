@@ -18,7 +18,7 @@ The goals of the project in the first milestone are as follows:
 -   [x] Establish CI and Code Quality for the project
 -   [x] Implement Unit test patterns
 -   [ ] Implement Integration Test patterns
--   [ ] Automated tests using terraform cli (fully integrated tests) - 0.15.3
+-   [x] Automated tests using terraform cli (fully integrated tests) - 0.15.3
 -   [ ] Document processes to make project easier for future contributers
 -   [ ] Add extensible backend system, implement filesystem only in M1
 -   [ ] Add yaml configuration system
@@ -49,13 +49,15 @@ All build and test commands are invoked by running: `make <target>`
 
 #### Supported targets
 
-| Target    | Description                         |
-| --------- | ----------------------------------- |
-| build     | Builds the terra-store wheel        |
-| clean     | Clean up build artifacts            |
-| container | Build local container               |
-| debug     | Run local version of flask app      |
-| help      | Display this help text              |
-| lint      | Lint the project                    |
-| run       | run container with port 8080 mapped |
-| test      | Run all test packages               |
+| Target            | Description                         |
+| ----------------- | ----------------------------------- |
+| build             | Builds the terra-store wheel        |
+| clean             | Clean up build artifacts            |
+| container         | Build local container               |
+| debug             | Run local version of flask app      |
+| help              | Display this help text              |
+| integration-tests | Run integration tests               |
+| lint              | Lint the project                    |
+| run               | run container with port 8080 mapped |
+| ssl               | generate self-signed certificate    |
+| test              | Run all test packages               |

@@ -7,8 +7,8 @@ from terraform_registry_api import registry
 @pytest.fixture
 def client():
     app = registry.create_app()
-    app.app.testing = True
-    yield app.app.test_client()
+    app.testing = True
+    yield app.test_client()
 
 
 def test_download_module_valid(client):
@@ -51,7 +51,7 @@ def test_list_versions_valid(client):
         ]
     }
     assert rv.status_code == 200
-    assert json.loads(rv.data) == json.dumps(versions)
+    assert json.loads(rv.data) == versions
 
 
 def test_list_versions_modulenotfound(client):

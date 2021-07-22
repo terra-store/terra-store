@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from os import remove
+from os import remove, environ
 
 from terraform_registry_api import registry
 
@@ -9,15 +9,15 @@ from terraform_registry_api import registry
 @pytest.fixture
 def client():
     app = registry.create_app()
-    app.app.testing = True
-    yield app.app.test_client()
+    app.testing = True
+    yield app.test_client()
 
 
 def test_service_discovery_endpoint(client):
     """Start with a blank database."""
     services = {
-        "modules.v1": "http://localhost:5000/v1/modules",
-        "providers.v1": "http://localhost:5000/v1/providers"
+        "modules.v1": "http://localhost/v1/modules",
+        "providers.v1": "http://localhost/v1/providers"
     }
     rv = client.get('/.well-known/terraform.json')
     assert rv.status_code == 200
@@ -66,6 +66,23 @@ def test_download_test_not_a_thing(client):
         "detail": "Type is not valid: Valid Types are [module|provider]",
         "status": 400,
         "title": "Bad Request",
+        "type": "about:blank"
+    }
+    assert json.loads(rv.data) == error
+
+
+def test_fs_type():
+    environ["fs_path"] = "./tests"
+    app = registry.create_app()
+    app.testing = True
+    client = app.test_client()
+    rv = client.get('/dl/module/terra/test/aws/2.0.0/test-2.0.0.zip')
+    assert rv.status_code == 404
+    assert rv.content_type == "application/problem+json"
+    error = {
+        "detail": "The requested file was not found on the server.",
+        "status": 404,
+        "title": "File Not Found",
         "type": "about:blank"
     }
     assert json.loads(rv.data) == error

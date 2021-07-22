@@ -1,0 +1,5 @@
+FROM nginx:latest
+
+COPY ./nginx/proxy_ssl.conf /etc/nginx/conf.d/
+COPY ./nginx/cert.pem /etc/nginx/conf.d/
+COPY ./nginx/key.pem /etc/nginx/conf.d/

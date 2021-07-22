@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    environment: 
+      fs_path: /terrastore/data
+    volumes: 
+      - type: bind
+        source: ./integration-tests/modules
+        target: /terrastore/data
+    expose: 
+      - 8080
+    networks:
+      - ts.int
+    healthcheck:
+        test: ["CMD", "/usr/bin/wget", "http://localhost:8080/.well-known/terraform.json"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+  proxy:
+    build: 
+      context: integration-tests
+      dockerfile: Dockerfile.proxy
+    links:
+      - api
+    networks:
+      - ts.int
+    expose:
+      - 443
+    depends_on: 
+      api:
+        condition: service_healthy
+  terraform:
+    build: integration-tests
+    links:
+      - proxy
+    networks:
+      - ts.int
+    command: init
+networks: 
+    ts.int:
+        name: ts.int

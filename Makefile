@@ -18,8 +18,20 @@ test: build ## Run all test packages
 	coverage report -m
 	coverage xml
 
+ssl: ## generate self-signed certificate
+	openssl req -subj '/CN=proxy.ts.int' \
+    -x509 -newkey rsa:4096 -nodes \
+    -keyout integration-tests/nginx/key.pem \
+    -out integration-tests/nginx/cert.pem \
+    -days 365 -extensions 'v3_req' \
+    -reqexts san -extensions san \
+    -config integration-tests/nginx/config.cnf
+
+integration-tests: ssl ## Run integration tests
+	./integration-tests/test.sh
+
 debug: ## Run local version of flask app 
-	python3 terraform_registry_api/registry.py
+	FLASK_APP=terraform_registry_api/registry.py:create_app FLASK_ENV=development flask run
 
 container: build test ## Build local container
 	docker build \
