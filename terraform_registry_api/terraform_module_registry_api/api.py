@@ -1,8 +1,9 @@
+from connexion.exceptions import BadRequestProblem
 from flask import make_response, redirect, request
 from os import environ
 
 from .backends import Dummy, Filesystem
-from .exceptions import ModuleNotFoundException
+from .exceptions import DuplicateModuleException, ModuleNotFoundException
 
 backend = Dummy()
 
@@ -214,6 +215,16 @@ def download_module(filepath):
     """
     return backend.download_module(filepath)
 
+
+def upload_version(namespace, name, provider, version):
+    try:
+        response = make_response(
+            backend.upload_version(namespace, name, provider, version, []), 200)
+        response.content_type = "application/json"
+        return response
+    except DuplicateModuleException:
+        raise BadRequestProblem(
+            detail="The requested module version has already been uploaded.")
 
 def set_backend(backendtype):
     """Set backend.

@@ -31,3 +31,17 @@ class FileNotFoundException(Exception):
         """
         self.message = message
         super().__init__(self.message)
+
+class DuplicateModuleException(Exception):
+    """DuplicateModuleException.
+
+    An Exception thrown when a module version already exists.
+    """
+
+    def __init__(self):
+        """Initialize the Exception.
+
+        Args:
+            message (str): Description of the exception cause
+        """
+        super().__init__()

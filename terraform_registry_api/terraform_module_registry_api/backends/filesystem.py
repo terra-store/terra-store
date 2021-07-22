@@ -240,6 +240,29 @@ class Filesystem(AbstractBackend):
             return join(self.basedir, filepath)
         raise FileNotFoundException("The requested file was not found in this backend.")
 
+    def upload_version(self, namespace, name, provider, version, files):
+        """Generate Upload URL for module version.
+
+        Args:
+            namespace (str): namespace for the version
+            name (str): Name of the module
+            provider (str): Provider for the module
+            version (str): Version for the module
+
+        Raises:
+            DuplicateModuleException: Error if module does not exist
+
+        Returns:
+            json: Details of module uploaded
+        """
+        module_name = "/{namespace}/{name}/".format(
+            namespace=namespace, name=name)
+        abs_path = join(self.basedir, namespace, name, provider, version)
+        if exists(abs_path):
+            raise DuplicateModuleException()
+        return None
+
+
     def __get_extended_details(self, baseurl, namespace, name, provider, version):
         """Get Module with fully extended details.
 

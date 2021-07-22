@@ -4,7 +4,8 @@ import tarfile
 from os.path import dirname, basename, join
 
 from .abstract import AbstractBackend
-from ..exceptions import ModuleNotFoundException, FileNotFoundException
+from ..exceptions import ModuleNotFoundException, \
+    FileNotFoundException, DuplicateModuleException
 
 
 class Dummy(AbstractBackend):
@@ -239,6 +240,37 @@ class Dummy(AbstractBackend):
             return filename
         raise FileNotFoundException("The requested file was not found in this backend.")
 
+    def upload_version(self, namespace, name, provider, version, files):
+        """Generate Upload URL for module version.
+
+        Args:
+            namespace (str): namespace for the version
+            name (str): Name of the module
+            provider (str): Provider for the module
+            version (str): Version for the module
+
+        Raises:
+            DuplicateModuleException: Error if module does not exist
+
+        Returns:
+            json: Details of module uploaded
+        """
+        abs_name = "/{namespace}/{name}/{provider}".format(
+            namespace=namespace, name=name, provider=provider)
+        if abs_name in self.dummy_data['modules'].keys() and \
+                version in self.dummy_data['modules'][abs_name]['versions']:
+            raise DuplicateModuleException()
+        else:
+            obj={
+                "status": "ok",
+                "module_details": {
+                    "namespace": namespace,
+                    "name": name,
+                    "provider": provider,
+                    "version": version
+                }
+            }
+            return json.dumps(obj)
 
 def get_extended_details(baseurl, namespace, name, provider, version):
     """Get Module with fully extended details.

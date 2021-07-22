@@ -331,3 +331,35 @@ paths:
       responses:
         302:
           description: Successfully list version of module
+  /{namespace}/{name}/{provider}/{version}/upload:
+    post:
+      operationId: terraform_registry_api.terraform_module_registry_api.api.upload_version
+      tags:
+        - Modules
+        - Base
+      summary: Upload a single Module Version
+      description: Upload a version
+      parameters:
+        - name: namespace
+          in: path
+          description: Module namespace
+          type: string
+          required: True
+        - name: name
+          in: path
+          description: Name of the module
+          type: string
+          required: True
+        - name: provider
+          in: path
+          description: the system target
+          type: string
+          required: True
+        - name: version
+          in: path
+          description: The version of the module
+          type: string
+          required: True
+      responses:
+        200:
+          description: Empty Response with download header

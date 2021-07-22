@@ -120,3 +120,20 @@ class AbstractBackend(ABC):
         Returns:
             File: The bytearray representation of the requested file
         """
+
+    @abstractmethod
+    def upload_version(self, namespace, name, provider, version, files):
+        """Generate Upload URL for module version.
+
+        Args:
+            namespace (str): namespace for the version
+            name (str): Name of the module
+            provider (str): Provider for the module
+            version (str): Version for the module
+
+        Raises:
+            DuplicateModuleException: Error if module does not exist
+
+        Returns:
+            json: Details of module uploaded
+        """

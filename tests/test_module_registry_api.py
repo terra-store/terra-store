@@ -417,3 +417,38 @@ def test_get_module_details_found(client):
     }
     assert rv.status_code == 200
     assert json.loads(rv.data) == expected
+
+
+def test_module_upload_valid(client):
+    respdata = {
+        "status": "ok", 
+        "module_details": {
+            "namespace": "terra",
+            "name": "newmodule",
+            "provider": "aws",
+            "version": "1.0.0"
+        }
+    }
+    data = {}
+    rv = client.post("/v1/modules/terra/newmodule/aws/1.0.0/upload",
+                     content_type='multipart/form-data',
+                     data=data)
+    assert rv.status_code == 200
+    assert rv.content_type == "application/json"
+    assert json.loads(rv.data) == respdata
+
+def test_module_upload_duplicate(client):
+    data = {}
+    rv = client.post("/v1/modules/terra/test/aws/2.0.0/upload",
+                     content_type='multipart/form-data',
+                     data=data)
+    
+    error = {
+        "detail": "The requested module version has already been uploaded.",
+        "status": 400,
+        "title": "Bad Request",
+        "type": "about:blank"
+    }
+    assert rv.status_code == 400
+    assert rv.content_type == "application/problem+json"
+    assert json.loads(rv.data) == error
