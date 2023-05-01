@@ -1,4 +1,4 @@
-flask==1.1.2
+flask==2.3.2
 connexion==2.7.0
 build==0.3.1.post1
 flake8==3.9.2
