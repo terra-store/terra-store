@@ -1,4 +1,4 @@
-flask==1.1.2
+flask==2.2.5
 connexion==2.7.0
 pytest==6.2.4
 coverage==5.5
